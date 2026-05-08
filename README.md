@@ -1,4 +1,4 @@
-# Leakage Attack Paths
+# Leakage - cve2026-23918
 
 This repository contains defensive attack-path models for vulnerability exposure review and remediation planning.
 
