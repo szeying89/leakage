@@ -1,6 +1,6 @@
 # CVE-2026-23918
 
-This repository contains information on CVE-2026-23918.
+This repository contains information on CVE-2026-23918 which contain assessments for the various cybersecurity roles.
 
 ## Attack paths
 
