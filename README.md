@@ -4,7 +4,7 @@ This repository contains defensive attack-path models for vulnerability exposure
 
 ## Attack paths
 
-- [CVE-2026-23918: Apache HTTP Server HTTP/2 Double Free](attack-paths/cve-2026-23918.md) ([SVG graphic](attack-paths/cve-2026-23918.svg), [threat hunting rules](threat-hunting/cve-2026-23918-rules.md), [Sigma rule pack](threat-hunting/sigma/README.md), [risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md), [intel assessment](threat-intel/cve-2026-23918-intel-assessment.md))
+- [CVE-2026-23918: Apache HTTP Server HTTP/2 Double Free](attack-paths/cve-2026-23918.md) ([SVG graphic](attack-paths/cve-2026-23918.svg), [threat hunting rules](threat-hunting/cve-2026-23918-rules.md), [Sigma rule pack](threat-hunting/sigma/README.md), [risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md), [intel assessment](threat-intel/cve-2026-23918-intel-assessment.md), [CISO assessment](ciso-assessments/cve-2026-23918-ciso-assessment.md))
 
 
 ## Safe proof-of-exposure check
@@ -45,3 +45,8 @@ See the full [CVE-2026-23918 risk assessment](risk-assessments/cve-2026-23918-ri
 ## Intelligence assessment
 
 The [CVE-2026-23918 intelligence assessment](threat-intel/cve-2026-23918-intel-assessment.md) summarizes source facts, key judgments, likely targeting, deployment-specific risk, collection requirements, hunting priorities, and intelligence gaps for security leadership and SOC teams.
+
+
+## CISO assessment
+
+The [CVE-2026-23918 CISO assessment](ciso-assessments/cve-2026-23918-ciso-assessment.md) provides an executive decision brief, business impact summary, enterprise risk rating, 24-hour and 72-hour operating plans, dashboard metrics, exception criteria, and incident escalation thresholds.
