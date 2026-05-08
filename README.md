@@ -4,7 +4,7 @@ This repository contains defensive attack-path models for vulnerability exposure
 
 ## Attack paths
 
-- [CVE-2026-23918: Apache HTTP Server HTTP/2 Double Free](attack-paths/cve-2026-23918.md) ([SVG graphic](attack-paths/cve-2026-23918.svg), [threat hunting rules](threat-hunting/cve-2026-23918-rules.md), [Sigma rule pack](threat-hunting/sigma/README.md), [risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md), [intel assessment](threat-intel/cve-2026-23918-intel-assessment.md), [CISO assessment](ciso-assessments/cve-2026-23918-ciso-assessment.md))
+- [CVE-2026-23918: Apache HTTP Server HTTP/2 Double Free](attack-paths/cve-2026-23918.md) ([SVG graphic](attack-paths/cve-2026-23918.svg), [threat hunting rules](threat-hunting/cve-2026-23918-rules.md), [Sigma rule pack](threat-hunting/sigma/README.md), [risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md), [intel assessment](threat-intel/cve-2026-23918-intel-assessment.md), [CISO assessment](ciso-assessments/cve-2026-23918-ciso-assessment.md), [CISO dashboard graphic](ciso-assessments/cve-2026-23918-ciso-dashboard.svg))
 
 
 ## Safe proof-of-exposure check
