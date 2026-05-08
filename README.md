@@ -4,7 +4,7 @@ This repository contains defensive attack-path models for vulnerability exposure
 
 ## Attack paths
 
-- [CVE-2026-23918: Apache HTTP Server HTTP/2 Double Free](attack-paths/cve-2026-23918.md) ([SVG graphic](attack-paths/cve-2026-23918.svg), [threat hunting rules](threat-hunting/cve-2026-23918-rules.md), [Sigma rule pack](threat-hunting/sigma/README.md), [risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md))
+- [CVE-2026-23918: Apache HTTP Server HTTP/2 Double Free](attack-paths/cve-2026-23918.md) ([SVG graphic](attack-paths/cve-2026-23918.svg), [threat hunting rules](threat-hunting/cve-2026-23918-rules.md), [Sigma rule pack](threat-hunting/sigma/README.md), [risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md), [intel assessment](threat-intel/cve-2026-23918-intel-assessment.md))
 
 
 ## Safe proof-of-exposure check
@@ -40,3 +40,8 @@ The simulator creates JSONL events that resemble the attack graph stages used by
 - **Internal Apache 2.4.66 with HTTP/2 reachable:** treat as **high** when reachable from workstations, VPN users, partner networks, or broad internal segments; downgrade to **medium** only if network controls tightly restrict access and monitoring is in place. Patch or disable HTTP/2 within 72 hours for broad-reach internal services.
 
 See the full [CVE-2026-23918 risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md) for the scenario matrix, decision checklist, and response actions.
+
+
+## Intelligence assessment
+
+The [CVE-2026-23918 intelligence assessment](threat-intel/cve-2026-23918-intel-assessment.md) summarizes source facts, key judgments, likely targeting, deployment-specific risk, collection requirements, hunting priorities, and intelligence gaps for security leadership and SOC teams.
