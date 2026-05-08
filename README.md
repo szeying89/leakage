@@ -4,7 +4,7 @@ This repository contains defensive attack-path models for vulnerability exposure
 
 ## Attack paths
 
-- [CVE-2026-23918: Apache HTTP Server HTTP/2 Double Free](attack-paths/cve-2026-23918.md) ([SVG graphic](attack-paths/cve-2026-23918.svg), [threat hunting rules](threat-hunting/cve-2026-23918-rules.md), [Sigma rule pack](threat-hunting/sigma/README.md), [risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md), [intel assessment](threat-intel/cve-2026-23918-intel-assessment.md), [CISO assessment](ciso-assessments/cve-2026-23918-ciso-assessment.md), [CISO dashboard graphic](ciso-assessments/cve-2026-23918-ciso-dashboard.svg))
+- [CVE-2026-23918: Apache HTTP Server HTTP/2 Double Free](attack-paths/cve-2026-23918.md) ([SVG graphic](attack-paths/cve-2026-23918.svg), [threat hunting rules](threat-hunting/cve-2026-23918-rules.md), [Sigma rule pack](threat-hunting/sigma/README.md), [risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md), [intel assessment](threat-intel/cve-2026-23918-intel-assessment.md), [CISO assessment](ciso-assessments/cve-2026-23918-ciso-assessment.md), [CISO dashboard graphic](ciso-assessments/cve-2026-23918-ciso-dashboard.svg), [DFIR workflow](dfir/cve_2026_23918_dfir_workflow.md), [DFIR triage script](dfir/cve_2026_23918_dfir_triage.py))
 
 
 ## Safe proof-of-exposure check
@@ -41,6 +41,14 @@ The simulator creates JSONL events that resemble the attack graph stages used by
 
 See the full [CVE-2026-23918 risk assessment](risk-assessments/cve-2026-23918-risk-assessment.md) for the scenario matrix, decision checklist, and response actions.
 
+
+## DFIR investigation workflow
+
+The [CVE-2026-23918 DFIR workflow](dfir/cve_2026_23918_dfir_workflow.md) gives incident responders a phase-based process for evidence preservation, exposure validation, compromise assessment, containment, credential review, and closure. The companion offline triage helper scans copied evidence for exposure, HTTP/2 reset anomalies, Apache crash evidence, suspicious Apache child processes, outbound activity, sensitive file access, and executable web-root changes:
+
+```bash
+python3 dfir/cve_2026_23918_dfir_triage.py --input /path/to/evidence --json-output /tmp/cve_2026_23918_dfir_findings.json --markdown-output /tmp/cve_2026_23918_dfir_report.md
+```
 
 ## Intelligence assessment
 
