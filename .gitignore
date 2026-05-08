@@ -1,0 +1,3 @@
+__pycache__/
+*.py[cod]
+poc/cve_2026_23918_synthetic_events.jsonl
