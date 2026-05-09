@@ -149,6 +149,71 @@ Track these KRIs until remediation is complete:
 
 Residual risk remains until all affected Linux hosts are confirmed patched, rebooted, monitored, and free of suspicious post-compromise activity. Because Dirty Frag is a post-compromise amplifier, organizations should also reduce local-execution opportunities and harden identity, application, and container paths that could provide the prerequisite foothold.
 
+## Embedded CISO dashboard visualization
+
+The operational dashboard below is embedded from [`dashboards/dirtyfrag_ciso_dashboard.json`](../dashboards/dirtyfrag_ciso_dashboard.json) so this assessment can be read as a standalone executive packet. For a styled HTML view, open [`dashboards/dirtyfrag_ciso_dashboard.html`](../dashboards/dirtyfrag_ciso_dashboard.html) or regenerate it with `python3 scripts/render_ciso_dashboard.py`.
+
+### Executive risk posture tiles
+
+```text
++----------------+----------------+----------------+----------------+----------------+
+| Overall risk   | Likelihood     | Impact         | Urgency        | Confidence     |
++----------------+----------------+----------------+----------------+----------------+
+| High           | Medium         | High           | High           | Medium-High    |
++----------------+----------------+----------------+----------------+----------------+
+```
+
+> Dirty Frag is a post-compromise Linux local privilege-escalation risk that can expand a low-privileged foothold into root access on vulnerable systems. CISO priorities are kernel patch/reboot validation, local-access reduction, safe module exposure reduction, and post-compromise detection coverage.
+
+### KRI dashboard cards
+
+| KRI | Current value | Target | Status | Owner |
+| --- | --- | --- | --- | --- |
+| Patch and reboot compliance | TBD | >= 95% prioritized Linux assets booted into remediated kernels | needs-data | Infrastructure / Platform Engineering |
+| High-value hosts with unknown posture | TBD | 0 internet-facing or crown-jewel Linux hosts with unknown kernel posture | needs-data | Vulnerability Management |
+| Relevant modules loaded without exception | TBD | 0 unauthorized esp4, esp6, or rxrpc exposures | needs-data | Network / Platform Engineering |
+| Detection telemetry coverage | TBD | >= 90% prioritized hosts reporting process, file, auth, module, and kernel inventory telemetry | needs-data | SOC / Detection Engineering |
+| Suspicious escalation investigations | TBD | All staging-to-root-transition alerts triaged within incident SLA | needs-data | Incident Response |
+| Risk exceptions past due | TBD | 0 overdue Dirty Frag exceptions | needs-data | GRC / Risk Owners |
+
+### Priority asset segment visualization
+
+| Asset segment | Priority | Required action |
+| --- | --- | --- |
+| Internet-facing Linux servers | Critical | Patch and reboot first; verify shell-access controls and detection coverage. |
+| Container and Kubernetes nodes | Critical | Validate node kernel posture, privileged container controls, host namespace restrictions, and runtime telemetry. |
+| VPN/IPsec/RxRPC-dependent infrastructure | High | Coordinate maintenance windows, document exceptions, and increase monitoring. |
+| GLPI/PHP application servers | High | Enable file/session monitoring and validate application integrity after suspected escalation. |
+| CI/CD runners and build agents | High | Restrict runner privileges, isolate workloads, and verify rapid patch cadence. |
+
+### Remediation workstream tracker
+
+| Workstream | Phase | Status | Success measure |
+| --- | --- | --- | --- |
+| Patch and reboot | First 24-72 hours | not-started | Prioritized Linux systems are booted into vendor-remediated kernels. |
+| Module exposure review | First 24-72 hours | not-started | Unused esp4, esp6, and rxrpc exposure is blocked or has approved business exceptions. |
+| Threat hunting deployment | First 24-72 hours | not-started | KQL, Sigma, and osquery hunts are deployed or mapped to equivalent telemetry. |
+| Linux access hardening | First 30 days | not-started | Unnecessary SSH, shell, service-account, and automation access paths are reduced. |
+| Exception governance | First 30 days | not-started | All delayed patching or module-disablement exceptions are time-bound and owner-approved. |
+
+### CISO decision gate visualization
+
+| Condition | CISO decision |
+| --- | --- |
+| Internet-facing or high-value Linux host has vulnerable or unknown kernel posture | Patch and reboot immediately; apply enhanced monitoring until validated. |
+| Host requires IPsec, VPN, or RxRPC and cannot disable modules | Approve temporary exception only with compensating access controls, monitoring, and committed remediation date. |
+| Suspicious local staging followed by root transition is observed | Treat as possible compromise; preserve evidence, isolate as appropriate, and run incident response. |
+| Confirmed exploitation or strong indicators exist | Treat as full host compromise and validate application integrity, credentials, persistence, and downstream access. |
+
+### Dashboard data feeds
+
+- Vulnerability management kernel inventory
+- EDR process and file telemetry
+- Linux auth logs and SSH session records
+- Module exposure checks from dirtyfrag_poc.py or osquery
+- KQL/Sigma/osquery Dirty Frag hunting content
+- GRC exception register
+
 ## Appendix: relationship to repository artifacts
 
 | Need | Repository artifact |
