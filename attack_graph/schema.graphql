@@ -1,0 +1,56 @@
+"""Defender-focused Dirty Frag attack graph schema."""
+schema {
+  query: Query
+}
+
+enum AttackNodeKind {
+  INITIAL_ACCESS
+  EXECUTION
+  EXPOSURE
+  PRIVILEGE_ESCALATION
+  DEFENSE_EVASION
+  CREDENTIAL_ACCESS
+  IMPACT
+  CONTROL
+  DETECTION
+}
+
+enum AttackEdgeKind {
+  ENABLES
+  REQUIRES
+  OBSERVED_AS
+  DETECTED_BY
+  MITIGATED_BY
+  LEADS_TO
+}
+
+type AttackNode {
+  id: ID!
+  label: String!
+  kind: AttackNodeKind!
+  description: String!
+  attackTechniques: [String!]!
+  evidence: [String!]!
+}
+
+type AttackEdge {
+  source: ID!
+  target: ID!
+  kind: AttackEdgeKind!
+  label: String!
+  confidence: String!
+}
+
+type AttackGraph {
+  id: ID!
+  name: String!
+  summary: String!
+  source: String!
+  nodes: [AttackNode!]!
+  edges: [AttackEdge!]!
+}
+
+type Query {
+  dirtyFragAttackGraph: AttackGraph!
+  attackNode(id: ID!): AttackNode
+}

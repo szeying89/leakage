@@ -103,6 +103,10 @@ This repository is intended for administrators, defenders, and lab validation. I
 - NVD: [CVE-2026-43284](https://nvd.nist.gov/vuln/detail/CVE-2026-43284)
 - CVE: [CVE-2026-43500](https://www.cve.org/CVERecord?id=CVE-2026-43500)
 
+## Attack path and attack graph
+
+A defender-focused Dirty Frag attack path and GraphQL-modeled attack graph are available in [`docs/attack-path-dirtyfrag.md`](docs/attack-path-dirtyfrag.md). The structured graph lives in [`attack_graph/dirtyfrag_attack_graph.json`](attack_graph/dirtyfrag_attack_graph.json), the GraphQL schema is in [`attack_graph/schema.graphql`](attack_graph/schema.graphql), and a Mermaid visualization is provided in [`attack_graph/dirtyfrag_attack_graph.mmd`](attack_graph/dirtyfrag_attack_graph.mmd).
+
 ## Intelligence assessment and hunting content
 
 This repository also includes defender-focused intelligence and hunt artifacts for Dirty Frag:

@@ -1,0 +1,23 @@
+query DirtyFragAttackGraph {
+  dirtyFragAttackGraph {
+    id
+    name
+    summary
+    source
+    nodes {
+      id
+      label
+      kind
+      description
+      attackTechniques
+      evidence
+    }
+    edges {
+      source
+      target
+      kind
+      label
+      confidence
+    }
+  }
+}
