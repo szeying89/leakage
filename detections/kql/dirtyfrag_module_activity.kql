@@ -1,0 +1,12 @@
+// Dirty Frag hunt: esp4, esp6, or rxrpc module load/unload/inspection commands.
+// Platform: Microsoft Defender XDR Advanced Hunting.
+// Module inspection alone is not malicious; correlate with patch posture and recent local execution.
+DeviceProcessEvents
+| where Timestamp > ago(14d)
+| where FileName in~ ("modprobe", "insmod", "rmmod", "lsmod")
+   or ProcessCommandLine has_any ("esp4", "esp6", "rxrpc", "xfrm")
+| where ProcessCommandLine has_any ("esp4", "esp6", "rxrpc")
+| extend Hunt="DirtyFrag_Module_Load_Unload_Or_Inspection"
+| project Hunt, Timestamp, DeviceName, AccountName, FileName, FolderPath, ProcessCommandLine,
+          InitiatingProcessFileName, InitiatingProcessCommandLine
+| order by Timestamp desc

@@ -1,0 +1,51 @@
+title: Dirty Frag Related GLPI And PHP Session File Activity
+id: 3dd9a0ef-7d61-4d6a-b1a1-f7228012c2ff
+status: experimental
+description: Detects GLPI authentication file and PHP session file activity similar to behavior Microsoft reported after suspected Dirty Frag or CopyFail privilege escalation.
+references:
+  - https://www.microsoft.com/en-us/security/blog/2026/05/08/active-attack-dirty-frag-linux-vulnerability-expands-post-compromise-risk/
+author: OpenAI Codex
+date: 2026-05-09
+tags:
+  - attack.defense-evasion
+  - attack.t1070
+  - attack.credential-access
+  - attack.t1552
+  - cve.2026-43284
+  - cve.2026-43500
+logsource:
+  product: linux
+  category: file_event
+detection:
+  selection_glpi_paths:
+    TargetFilename|contains:
+      - '/glpi/'
+      - '/etc/glpi/'
+      - '/usr/share/glpi/'
+  selection_glpi_sensitive_names:
+    TargetFilename|contains:
+      - 'ldap'
+      - 'auth'
+      - '.swp'
+  selection_php_session_paths:
+    TargetFilename|contains:
+      - '/var/lib/php/sessions/'
+      - '/var/lib/php/session/'
+      - '/tmp/sess_'
+  selection_session_names:
+    TargetFilename|contains:
+      - '/sess_'
+      - 'session'
+  selection_destructive_tools:
+    Image|endswith:
+      - '/rm'
+      - '/shred'
+      - '/truncate'
+      - '/wipe'
+      - '/dd'
+  condition: (selection_glpi_paths and selection_glpi_sensitive_names) or (selection_php_session_paths and selection_session_names) or (selection_php_session_paths and selection_destructive_tools)
+falsepositives:
+  - GLPI maintenance, backup, upgrade, or administrator troubleshooting
+  - PHP session garbage collection by legitimate application processes
+  - Incident-response containment that intentionally clears session state
+level: medium
