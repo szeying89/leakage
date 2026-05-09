@@ -68,6 +68,29 @@ class DirtyFragPocTests(unittest.TestCase):
             self.assertEqual(report.risk_level, "low")
             self.assertFalse(report.any_exposed)
 
+    def test_synthetic_telemetry_is_safe_and_structured(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            proc_modules = Path(tmp) / "modules"
+            proc_modules.write_text("esp4 16384 0 - Live 0x0\n", encoding="utf-8")
+            modprobe_root = Path(tmp) / "modprobe.d"
+            module_root = Path(tmp) / "module-tree"
+            modprobe_root.mkdir()
+            module_root.mkdir()
+            report = dirtyfrag_poc.build_report(
+                kernel_release="test-kernel",
+                proc_modules=proc_modules,
+                modprobe_roots=(modprobe_root,),
+                module_roots=(module_root,),
+            )
+            events = dirtyfrag_poc.build_synthetic_telemetry(report)
+            self.assertGreaterEqual(len(events), 5)
+            self.assertEqual(events[0]["event_type"], "process_start")
+            self.assertIn("Synthetic", events[2]["note"])
+            joined = "\n".join(event["command_line"] for event in events)
+            self.assertNotIn("/etc/passwd", joined)
+            self.assertNotIn("chmod u+s", joined)
+
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -38,6 +38,14 @@ Run the JSON report:
 python3 dirtyfrag_poc.py --json
 ```
 
+Generate safe synthetic JSONL telemetry for SIEM and detection validation:
+
+```bash
+python3 dirtyfrag_poc.py --simulate-telemetry
+```
+
+The simulation mode is intentionally non-exploitative. It emits fictional process, module-exposure, staging, root-transition, and PHP-session-tampering events without creating files, executing payloads, triggering kernel behavior, or changing host state.
+
 Example output:
 
 ```text
@@ -95,7 +103,7 @@ python3 -m py_compile dirtyfrag_poc.py tests/test_dirtyfrag_poc.py
 
 ## Safety boundary
 
-This repository is intended for administrators, defenders, and lab validation. It does not provide instructions or code to trigger kernel memory corruption, overwrite privileged files, spawn a root shell, bypass container isolation, or otherwise weaponize Dirty Frag.
+This repository is intended for administrators, defenders, and lab validation. It does not provide instructions or code to trigger kernel memory corruption, overwrite privileged files, spawn a root shell, bypass container isolation, or otherwise weaponize Dirty Frag. Requests to convert the PoC into a privilege-escalation exploit should instead use the included simulation, attack graph, and detection content for safe validation.
 
 ## References
 

@@ -16,6 +16,7 @@ import platform
 import re
 import sys
 from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable
 
@@ -181,6 +182,78 @@ def build_report(
     return Report(kernel_release=release, effective_uid=os.geteuid(), modules=tuple(module_reports), notes=notes)
 
 
+def build_synthetic_telemetry(report: Report) -> tuple[dict[str, str], ...]:
+    """Return synthetic Dirty Frag-like telemetry for detection validation.
+
+    The generated records are intentionally fictional and safe: they do not run
+    commands, touch the filesystem, attempt kernel interaction, or include exploit
+    mechanics. They are meant for SIEM/parser testing and tabletop exercises.
+    """
+
+    base_time = datetime(2026, 5, 8, 14, 0, tzinfo=timezone.utc)
+    module_summary = ",".join(module.name for module in report.modules if module.exposed) or "none"
+    events = (
+        {
+            "timestamp": base_time.isoformat(),
+            "event_type": "process_start",
+            "host": "dirtyfrag-lab-host",
+            "user": "lowpriv-web",
+            "process": "/bin/sh",
+            "parent": "php-fpm",
+            "command_line": "sh -c id; uname -a",
+            "note": "Synthetic low-privileged shell discovery event.",
+        },
+        {
+            "timestamp": (base_time + timedelta(minutes=2)).isoformat(),
+            "event_type": "module_exposure_check",
+            "host": "dirtyfrag-lab-host",
+            "user": "lowpriv-web",
+            "process": "dirtyfrag_poc.py",
+            "parent": "/bin/sh",
+            "command_line": "python3 dirtyfrag_poc.py --json",
+            "note": f"Synthetic exposure summary; exposed_modules={module_summary}; risk={report.risk_level}.",
+        },
+        {
+            "timestamp": (base_time + timedelta(minutes=4)).isoformat(),
+            "event_type": "suspicious_staging",
+            "host": "dirtyfrag-lab-host",
+            "user": "lowpriv-web",
+            "process": "/tmp/update",
+            "parent": "/bin/sh",
+            "command_line": "./update",
+            "note": "Synthetic staging signal modeled after reported behavior; no binary is created or executed.",
+        },
+        {
+            "timestamp": (base_time + timedelta(minutes=5)).isoformat(),
+            "event_type": "root_transition_candidate",
+            "host": "dirtyfrag-lab-host",
+            "user": "root",
+            "process": "/usr/bin/su",
+            "parent": "/tmp/update",
+            "command_line": "su",
+            "note": "Synthetic root-transition candidate for detection validation only.",
+        },
+        {
+            "timestamp": (base_time + timedelta(minutes=7)).isoformat(),
+            "event_type": "application_session_tampering",
+            "host": "dirtyfrag-lab-host",
+            "user": "root",
+            "process": "/usr/bin/rm",
+            "parent": "/bin/sh",
+            "command_line": "rm /var/lib/php/sessions/sess_SYNTHETIC",
+            "note": "Synthetic GLPI/PHP session tampering signal; no file operation is performed.",
+        },
+    )
+    return events
+
+
+def print_synthetic_telemetry(report: Report) -> None:
+    """Print synthetic telemetry as JSON lines."""
+
+    for event in build_synthetic_telemetry(report):
+        print(json.dumps(event, sort_keys=True))
+
+
 def print_human(report: Report) -> None:
     """Print a concise operator-oriented report."""
 
@@ -221,6 +294,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument("--json", action="store_true", help="emit machine-readable JSON")
     parser.add_argument(
+        "--simulate-telemetry",
+        action="store_true",
+        help="emit safe synthetic JSONL events for detection validation; does not exploit anything",
+    )
+    parser.add_argument(
         "--kernel-release",
         help="override kernel release for fixture/testing use; defaults to the running kernel",
     )
@@ -230,7 +308,9 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv or sys.argv[1:])
     report = build_report(kernel_release=args.kernel_release)
-    if args.json:
+    if args.simulate_telemetry:
+        print_synthetic_telemetry(report)
+    elif args.json:
         print(report_to_json(report))
     else:
         print_human(report)
