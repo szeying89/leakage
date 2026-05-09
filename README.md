@@ -123,6 +123,10 @@ A CISO-ready Dirty Frag risk assessment is available in [`docs/ciso-risk-assessm
 
 A defender-focused Dirty Frag attack path and GraphQL-modeled attack graph are available in [`docs/attack-path-dirtyfrag.md`](docs/attack-path-dirtyfrag.md). The structured graph lives in [`attack_graph/dirtyfrag_attack_graph.json`](attack_graph/dirtyfrag_attack_graph.json), the GraphQL schema is in [`attack_graph/schema.graphql`](attack_graph/schema.graphql), a Mermaid visualization is provided in [`attack_graph/dirtyfrag_attack_graph.mmd`](attack_graph/dirtyfrag_attack_graph.mmd), and a 16:9 presentation-ready SVG is available in [`attack_graph/dirtyfrag_attack_graph.svg`](attack_graph/dirtyfrag_attack_graph.svg).
 
+## Visual threat model
+
+A defender-focused Dirty Frag threat model is available in [`docs/threat-model-dirtyfrag.md`](docs/threat-model-dirtyfrag.md). It includes a slide-ready SVG visualization at [`threat_model/dirtyfrag_threat_model.svg`](threat_model/dirtyfrag_threat_model.svg), Mermaid source at [`threat_model/dirtyfrag_threat_model.mmd`](threat_model/dirtyfrag_threat_model.mmd), structured JSON model data at [`threat_model/dirtyfrag_threat_model.json`](threat_model/dirtyfrag_threat_model.json), and a repeatable renderer at [`scripts/render_threat_model.py`](scripts/render_threat_model.py). Regenerate the SVG with `python3 scripts/render_threat_model.py --format svg --output threat_model/dirtyfrag_threat_model.svg`.
+
 ## Intelligence assessment and hunting content
 
 This repository also includes defender-focused intelligence and hunt artifacts for Dirty Frag:

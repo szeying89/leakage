@@ -1,0 +1,167 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Dirty Frag Defensive Threat Model visualization</title>
+  <desc id="desc">Threat model visualization for Dirty Frag post-compromise Linux privilege-escalation risk using trust zones, data flows, STRIDE threats, and defensive controls.</desc>
+  <defs>
+    <marker id="arrow-risk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#475569"/></marker>
+    <marker id="arrow-control" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/></marker>
+  </defs>
+  <rect width="1600" height="900" fill="#e5e7eb"/>
+  <text x="40" y="54" font-size="32" font-weight="900" fill="#0f172a" text-anchor="start">Dirty Frag Defensive Threat Model</text>
+  <text x="40" y="84" font-size="16" font-weight="600" fill="#334155" text-anchor="start">As of 2026-05-09 | Visual threat model for defender planning</text>
+  <text x="1190" y="118" font-size="24" font-weight="900" fill="#0f172a" text-anchor="start">STRIDE risk lens</text>
+  <rect x="40" y="120" width="210" height="250" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="40" y="120" width="210" height="42" rx="18" fill="#e2e8f0"/>
+<text x="56" y="146" font-size="14" font-weight="800" fill="#0f172a" text-anchor="start">External / attacker-controlled</text>
+<text x="56" y="161" font-size="14" font-weight="800" fill="#0f172a" text-anchor="start">context</text>
+<rect x="285" y="120" width="250" height="430" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="285" y="120" width="250" height="42" rx="18" fill="#e2e8f0"/>
+<text x="301" y="146" font-size="14" font-weight="800" fill="#0f172a" text-anchor="start">Compromised low-privileged Linux</text>
+<text x="301" y="161" font-size="14" font-weight="800" fill="#0f172a" text-anchor="start">context</text>
+<rect x="570" y="120" width="275" height="430" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="570" y="120" width="275" height="42" rx="18" fill="#e2e8f0"/>
+<text x="586" y="146" font-size="14" font-weight="800" fill="#0f172a" text-anchor="start">Kernel and module attack surface</text>
+<rect x="880" y="120" width="260" height="430" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="880" y="120" width="260" height="42" rx="18" fill="#e2e8f0"/>
+<text x="896" y="146" font-size="14" font-weight="800" fill="#0f172a" text-anchor="start">Privileged host and business</text>
+<text x="896" y="161" font-size="14" font-weight="800" fill="#0f172a" text-anchor="start">assets</text>
+<rect x="40" y="590" width="1100" height="230" rx="18" fill="#f8fafc" stroke="#94a3b8" stroke-width="2"/>
+<rect x="40" y="590" width="1100" height="42" rx="18" fill="#e2e8f0"/>
+<text x="56" y="616" font-size="14" font-weight="800" fill="#0f172a" text-anchor="start">Defender controls and telemetry</text>
+  <path d="M 155 282 L 405 262" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-risk)"/>
+<text x="280" y="264" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">post-compromise access</text> 
+<path d="M 405 262 L 405 427" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-risk)"/>
+<text x="405" y="336" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">stage artifacts</text> 
+<path d="M 405 262 L 700 262" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-risk)"/>
+<text x="552" y="254" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">inspect module exposure</text> 
+<path d="M 700 262 L 700 427" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-risk)"/>
+<text x="700" y="336" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">vulnerable preconditions</text> 
+<path d="M 700 427 L 1005 262" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-risk)"/>
+<text x="852" y="336" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">root impact if exploited</text> 
+<path d="M 1005 262 L 1005 427" fill="none" stroke="#475569" stroke-width="2" marker-end="url(#arrow-risk)"/>
+<text x="1005" y="336" font-size="10" font-weight="700" fill="#475569" text-anchor="middle">access or tamper</text> 
+<path d="M 175 732 L 700 262" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrow-control)"/>
+<text x="437" y="489" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle">reduce exposure</text> 
+<path d="M 555 732 L 405 262" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrow-control)"/>
+<text x="480" y="489" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle">hunt execution patterns</text> 
+<path d="M 555 732 L 1005 427" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrow-control)"/>
+<text x="780" y="571" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle">hunt session/data tampering</text> 
+<path d="M 935 732 L 1005 262" fill="none" stroke="#15803d" stroke-width="2" stroke-dasharray="7 7" marker-end="url(#arrow-control)"/>
+<text x="970" y="489" font-size="10" font-weight="700" fill="#15803d" text-anchor="middle">contain and recover</text> 
+  <g id="external_access" aria-label="Initial foothold source">
+  <title>Phished SSH credential, exposed web application, web shell, compromised container workload, or similar post-compromise entry point.</title>
+  <rect x="65" y="235" width="180" height="94" rx="14" fill="#fee2e2" stroke="#dc2626" stroke-width="2"/>
+<text x="155" y="261" font-size="14" font-weight="800" fill="#7f1d1d" text-anchor="middle">Initial foothold</text>
+<text x="155" y="278" font-size="14" font-weight="800" fill="#7f1d1d" text-anchor="middle">source</text>
+<text x="155" y="299" font-size="10" font-weight="500" fill="#7f1d1d" text-anchor="middle">Phished SSH credential,</text>
+<text x="155" y="312" font-size="10" font-weight="500" fill="#7f1d1d" text-anchor="middle">exposed web application, web</text>
+</g>
+<g id="low_priv_execution" aria-label="Low-privileged execution">
+  <title>Interactive shell, service process, PHP runtime, or workload identity able to execute local commands.</title>
+  <rect x="315" y="215" width="180" height="94" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+<text x="405" y="241" font-size="14" font-weight="800" fill="#1e3a8a" text-anchor="middle">Low-privileged</text>
+<text x="405" y="258" font-size="14" font-weight="800" fill="#1e3a8a" text-anchor="middle">execution</text>
+<text x="405" y="279" font-size="10" font-weight="500" fill="#1e3a8a" text-anchor="middle">Interactive shell, service</text>
+<text x="405" y="292" font-size="10" font-weight="500" fill="#1e3a8a" text-anchor="middle">process, PHP runtime, or</text>
+</g>
+<g id="local_staging" aria-label="Local staging paths">
+  <title>Writable temporary directories or application paths used for suspicious tooling, logs, or session artifacts.</title>
+  <rect x="315" y="380" width="180" height="94" rx="14" fill="#ede9fe" stroke="#7c3aed" stroke-width="2"/>
+<text x="405" y="406" font-size="14" font-weight="800" fill="#4c1d95" text-anchor="middle">Local staging paths</text>
+<text x="405" y="444" font-size="10" font-weight="500" fill="#4c1d95" text-anchor="middle">Writable temporary</text>
+<text x="405" y="457" font-size="10" font-weight="500" fill="#4c1d95" text-anchor="middle">directories or application</text>
+</g>
+<g id="module_surface" aria-label="esp4 / esp6 / rxrpc exposure">
+  <title>Dirty Frag-relevant modules loaded, loadable, or insufficiently governed by modprobe policy.</title>
+  <rect x="610" y="215" width="180" height="94" rx="14" fill="#ffedd5" stroke="#ea580c" stroke-width="2"/>
+<text x="700" y="241" font-size="14" font-weight="800" fill="#7c2d12" text-anchor="middle">esp4 / esp6 / rxrpc</text>
+<text x="700" y="258" font-size="14" font-weight="800" fill="#7c2d12" text-anchor="middle">exposure</text>
+<text x="700" y="279" font-size="10" font-weight="500" fill="#7c2d12" text-anchor="middle">Dirty Frag-relevant modules</text>
+<text x="700" y="292" font-size="10" font-weight="500" fill="#7c2d12" text-anchor="middle">loaded, loadable, or</text>
+</g>
+<g id="privilege_boundary" aria-label="User-to-kernel privilege boundary">
+  <title>Boundary where post-compromise local execution can become root impact if vulnerability and prerequisites are present.</title>
+  <rect x="610" y="380" width="180" height="94" rx="14" fill="#fef3c7" stroke="#d97706" stroke-width="2"/>
+<text x="700" y="406" font-size="14" font-weight="800" fill="#78350f" text-anchor="middle">User-to-kernel</text>
+<text x="700" y="423" font-size="14" font-weight="800" fill="#78350f" text-anchor="middle">privilege boundary</text>
+<text x="700" y="444" font-size="10" font-weight="500" fill="#78350f" text-anchor="middle">Boundary where post-</text>
+<text x="700" y="457" font-size="10" font-weight="500" fill="#78350f" text-anchor="middle">compromise local execution</text>
+</g>
+<g id="root_context" aria-label="Root context">
+  <title>Administrative control of the host with ability to change files, credentials, security tooling, and workloads.</title>
+  <rect x="915" y="215" width="180" height="94" rx="14" fill="#fecaca" stroke="#b91c1c" stroke-width="2"/>
+<text x="1005" y="241" font-size="14" font-weight="800" fill="#7f1d1d" text-anchor="middle">Root context</text>
+<text x="1005" y="279" font-size="10" font-weight="500" fill="#7f1d1d" text-anchor="middle">Administrative control of the</text>
+<text x="1005" y="292" font-size="10" font-weight="500" fill="#7f1d1d" text-anchor="middle">host with ability to change</text>
+</g>
+<g id="business_assets" aria-label="Credentials, sessions, and data">
+  <title>GLPI/PHP session data, service secrets, configuration, logs, and business data exposed after privilege escalation.</title>
+  <rect x="915" y="380" width="180" height="94" rx="14" fill="#fce7f3" stroke="#db2777" stroke-width="2"/>
+<text x="1005" y="406" font-size="14" font-weight="800" fill="#831843" text-anchor="middle">Credentials,</text>
+<text x="1005" y="423" font-size="14" font-weight="800" fill="#831843" text-anchor="middle">sessions, and data</text>
+<text x="1005" y="444" font-size="10" font-weight="500" fill="#831843" text-anchor="middle">GLPI/PHP session data,</text>
+<text x="1005" y="457" font-size="10" font-weight="500" fill="#831843" text-anchor="middle">service secrets,</text>
+</g>
+<g id="preventive_controls" aria-label="Patch and module controls">
+  <title>Kernel patching, reboot compliance, module deny rules, container hardening, least privilege, and shell access governance.</title>
+  <rect x="85" y="685" width="180" height="94" rx="14" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+<text x="175" y="711" font-size="14" font-weight="800" fill="#14532d" text-anchor="middle">Patch and module</text>
+<text x="175" y="728" font-size="14" font-weight="800" fill="#14532d" text-anchor="middle">controls</text>
+<text x="175" y="749" font-size="10" font-weight="500" fill="#14532d" text-anchor="middle">Kernel patching, reboot</text>
+<text x="175" y="762" font-size="10" font-weight="500" fill="#14532d" text-anchor="middle">compliance, module deny</text>
+</g>
+<g id="detective_controls" aria-label="Telemetry and hunting controls">
+  <title>KQL, Sigma, osquery, EDR, module-load telemetry, root-transition monitoring, and suspicious file/session activity hunts.</title>
+  <rect x="465" y="685" width="180" height="94" rx="14" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+<text x="555" y="711" font-size="14" font-weight="800" fill="#14532d" text-anchor="middle">Telemetry and hunting</text>
+<text x="555" y="728" font-size="14" font-weight="800" fill="#14532d" text-anchor="middle">controls</text>
+<text x="555" y="749" font-size="10" font-weight="500" fill="#14532d" text-anchor="middle">KQL, Sigma, osquery, EDR,</text>
+<text x="555" y="762" font-size="10" font-weight="500" fill="#14532d" text-anchor="middle">module-load telemetry, root-</text>
+</g>
+<g id="response_controls" aria-label="IR and exception governance">
+  <title>Forensic triage, containment, rebuild decisions, exception approvals, risk acceptance, and executive reporting.</title>
+  <rect x="845" y="685" width="180" height="94" rx="14" fill="#dcfce7" stroke="#16a34a" stroke-width="2"/>
+<text x="935" y="711" font-size="14" font-weight="800" fill="#14532d" text-anchor="middle">IR and exception</text>
+<text x="935" y="728" font-size="14" font-weight="800" fill="#14532d" text-anchor="middle">governance</text>
+<text x="935" y="749" font-size="10" font-weight="500" fill="#14532d" text-anchor="middle">Forensic triage, containment,</text>
+<text x="935" y="762" font-size="10" font-weight="500" fill="#14532d" text-anchor="middle">rebuild decisions, exception</text>
+</g>
+  <rect x="1180" y="130" width="360" height="560" rx="18" fill="#111827" stroke="#334155"/>
+  <g aria-label="Spoofing threat">
+  <rect x="1190" y="150" width="330" height="68" rx="12" fill="#0f172a" stroke="#334155"/>
+  <circle cx="1212" cy="174" r="8" fill="#d97706"/>
+  <text x="1232" y="177" font-size="15" font-weight="800" fill="#f8fafc" text-anchor="start">Spoofing</text>
+  <text x="1232" y="200" font-size="13" font-weight="700" fill="#cbd5e1" text-anchor="start">Risk: Medium</text>
+</g>
+<g aria-label="Tampering threat">
+  <rect x="1190" y="236" width="330" height="68" rx="12" fill="#0f172a" stroke="#334155"/>
+  <circle cx="1212" cy="260" r="8" fill="#dc2626"/>
+  <text x="1232" y="263" font-size="15" font-weight="800" fill="#f8fafc" text-anchor="start">Tampering</text>
+  <text x="1232" y="286" font-size="13" font-weight="700" fill="#cbd5e1" text-anchor="start">Risk: High</text>
+</g>
+<g aria-label="Repudiation threat">
+  <rect x="1190" y="322" width="330" height="68" rx="12" fill="#0f172a" stroke="#334155"/>
+  <circle cx="1212" cy="346" r="8" fill="#d97706"/>
+  <text x="1232" y="349" font-size="15" font-weight="800" fill="#f8fafc" text-anchor="start">Repudiation</text>
+  <text x="1232" y="372" font-size="13" font-weight="700" fill="#cbd5e1" text-anchor="start">Risk: Medium</text>
+</g>
+<g aria-label="Information Disclosure threat">
+  <rect x="1190" y="408" width="330" height="68" rx="12" fill="#0f172a" stroke="#334155"/>
+  <circle cx="1212" cy="432" r="8" fill="#dc2626"/>
+  <text x="1232" y="435" font-size="15" font-weight="800" fill="#f8fafc" text-anchor="start">Information Disclosure</text>
+  <text x="1232" y="458" font-size="13" font-weight="700" fill="#cbd5e1" text-anchor="start">Risk: High</text>
+</g>
+<g aria-label="Denial of Service threat">
+  <rect x="1190" y="494" width="330" height="68" rx="12" fill="#0f172a" stroke="#334155"/>
+  <circle cx="1212" cy="518" r="8" fill="#d97706"/>
+  <text x="1232" y="521" font-size="15" font-weight="800" fill="#f8fafc" text-anchor="start">Denial of Service</text>
+  <text x="1232" y="544" font-size="13" font-weight="700" fill="#cbd5e1" text-anchor="start">Risk: Medium</text>
+</g>
+<g aria-label="Elevation of Privilege threat">
+  <rect x="1190" y="580" width="330" height="68" rx="12" fill="#0f172a" stroke="#334155"/>
+  <circle cx="1212" cy="604" r="8" fill="#991b1b"/>
+  <text x="1232" y="607" font-size="15" font-weight="800" fill="#f8fafc" text-anchor="start">Elevation of Privilege</text>
+  <text x="1232" y="630" font-size="13" font-weight="700" fill="#cbd5e1" text-anchor="start">Risk: Critical</text>
+</g>
+  <rect x="40" y="840" width="1500" height="36" rx="12" fill="#0f172a"/>
+  <text x="60" y="864" font-size="14" font-weight="700" fill="#e2e8f0" text-anchor="start">Defensive visualization only; excludes exploit mechanics, payload guidance, kernel corruption primitives, and step-by-step weaponization.</text>
+</svg>

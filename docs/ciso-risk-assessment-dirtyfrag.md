@@ -222,6 +222,7 @@ The operational dashboard below is embedded from [`dashboards/dirtyfrag_ciso_das
 | --- | --- |
 | Exposure validation | `dirtyfrag_poc.py` |
 | Executive attack path | `docs/attack-path-dirtyfrag.md`, `attack_graph/dirtyfrag_attack_graph.mmd`, and the 16:9 presentation SVG `attack_graph/dirtyfrag_attack_graph.svg` |
+| Visual threat model | `docs/threat-model-dirtyfrag.md`, `threat_model/dirtyfrag_threat_model.svg`, and `threat_model/dirtyfrag_threat_model.json` |
 | Threat intelligence and hunting detail | `docs/intel-assessment-dirtyfrag.md` |
 | Detection engineering | `detections/kql/`, `detections/sigma/`, `detections/osquery/` |
 | Validation tests | `tests/` |

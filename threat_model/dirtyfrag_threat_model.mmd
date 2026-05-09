@@ -1,0 +1,42 @@
+flowchart LR
+  subgraph zone_external["External / attacker-controlled context"]
+    external_access["Initial foothold source"]
+  end
+  subgraph zone_user["Compromised low-privileged Linux context"]
+    low_priv_execution["Low-privileged execution"]
+    local_staging["Local staging paths"]
+  end
+  subgraph zone_kernel["Kernel and module attack surface"]
+    module_surface["esp4 / esp6 / rxrpc exposure"]
+    privilege_boundary["User-to-kernel privilege boundary"]
+  end
+  subgraph zone_privileged["Privileged host and business assets"]
+    root_context["Root context"]
+    business_assets["Credentials, sessions, and data"]
+  end
+  subgraph zone_defender["Defender controls and telemetry"]
+    preventive_controls["Patch and module controls"]
+    detective_controls["Telemetry and hunting controls"]
+    response_controls["IR and exception governance"]
+  end
+  external_access -->|post-compromise access| low_priv_execution
+  low_priv_execution -->|stage artifacts| local_staging
+  low_priv_execution -->|inspect module exposure| module_surface
+  module_surface -->|vulnerable preconditions| privilege_boundary
+  privilege_boundary -->|root impact if exploited| root_context
+  root_context -->|access or tamper| business_assets
+  preventive_controls -.->|reduce exposure| module_surface
+  detective_controls -.->|hunt execution patterns| low_priv_execution
+  detective_controls -.->|hunt session/data tampering| business_assets
+  response_controls -.->|contain and recover| root_context
+
+  classDef threat fill:#fee2e2,stroke:#dc2626,color:#7f1d1d
+  classDef user fill:#dbeafe,stroke:#2563eb,color:#1e3a8a
+  classDef kernel fill:#ffedd5,stroke:#ea580c,color:#7c2d12
+  classDef asset fill:#fce7f3,stroke:#db2777,color:#831843
+  classDef control fill:#dcfce7,stroke:#16a34a,color:#14532d
+  class external_access threat
+  class low_priv_execution,local_staging user
+  class module_surface,privilege_boundary kernel
+  class root_context,business_assets asset
+  class preventive_controls,detective_controls,response_controls control

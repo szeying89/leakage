@@ -1,0 +1,269 @@
+{
+  "title": "Dirty Frag Defensive Threat Model",
+  "as_of": "2026-05-09",
+  "scope": "Post-compromise Linux local privilege-escalation risk involving exposed esp4, esp6, or rxrpc kernel module paths, modeled for defensive architecture review and executive presentation.",
+  "safety_boundary": "Defensive visualization only; excludes exploit mechanics, payload guidance, kernel corruption primitives, and step-by-step weaponization.",
+  "trust_zones": [
+    {
+      "id": "zone_external",
+      "label": "External / attacker-controlled context",
+      "description": "Internet-originated access, compromised credentials, web shell operators, or other untrusted sources before local code execution."
+    },
+    {
+      "id": "zone_user",
+      "label": "Compromised low-privileged Linux context",
+      "description": "A user, service account, web process, or container workload where an adversary already has local execution but not root."
+    },
+    {
+      "id": "zone_kernel",
+      "label": "Kernel and module attack surface",
+      "description": "Host kernel, module loading policy, and Dirty Frag-relevant esp4, esp6, and rxrpc exposure conditions."
+    },
+    {
+      "id": "zone_privileged",
+      "label": "Privileged host and business assets",
+      "description": "Root context, credentials, application data, GLPI/PHP session stores, secrets, and lateral-movement opportunities."
+    },
+    {
+      "id": "zone_defender",
+      "label": "Defender controls and telemetry",
+      "description": "Patch management, module policy, EDR/SIEM telemetry, osquery, detections, incident response, and exception governance."
+    }
+  ],
+  "components": [
+    {
+      "id": "external_access",
+      "label": "Initial foothold source",
+      "zone": "zone_external",
+      "kind": "threat_source",
+      "summary": "Phished SSH credential, exposed web application, web shell, compromised container workload, or similar post-compromise entry point."
+    },
+    {
+      "id": "low_priv_execution",
+      "label": "Low-privileged execution",
+      "zone": "zone_user",
+      "kind": "process",
+      "summary": "Interactive shell, service process, PHP runtime, or workload identity able to execute local commands."
+    },
+    {
+      "id": "local_staging",
+      "label": "Local staging paths",
+      "zone": "zone_user",
+      "kind": "data_store",
+      "summary": "Writable temporary directories or application paths used for suspicious tooling, logs, or session artifacts."
+    },
+    {
+      "id": "module_surface",
+      "label": "esp4 / esp6 / rxrpc exposure",
+      "zone": "zone_kernel",
+      "kind": "attack_surface",
+      "summary": "Dirty Frag-relevant modules loaded, loadable, or insufficiently governed by modprobe policy."
+    },
+    {
+      "id": "privilege_boundary",
+      "label": "User-to-kernel privilege boundary",
+      "zone": "zone_kernel",
+      "kind": "trust_boundary",
+      "summary": "Boundary where post-compromise local execution can become root impact if vulnerability and prerequisites are present."
+    },
+    {
+      "id": "root_context",
+      "label": "Root context",
+      "zone": "zone_privileged",
+      "kind": "privileged_identity",
+      "summary": "Administrative control of the host with ability to change files, credentials, security tooling, and workloads."
+    },
+    {
+      "id": "business_assets",
+      "label": "Credentials, sessions, and data",
+      "zone": "zone_privileged",
+      "kind": "business_asset",
+      "summary": "GLPI/PHP session data, service secrets, configuration, logs, and business data exposed after privilege escalation."
+    },
+    {
+      "id": "preventive_controls",
+      "label": "Patch and module controls",
+      "zone": "zone_defender",
+      "kind": "control",
+      "summary": "Kernel patching, reboot compliance, module deny rules, container hardening, least privilege, and shell access governance."
+    },
+    {
+      "id": "detective_controls",
+      "label": "Telemetry and hunting controls",
+      "zone": "zone_defender",
+      "kind": "control",
+      "summary": "KQL, Sigma, osquery, EDR, module-load telemetry, root-transition monitoring, and suspicious file/session activity hunts."
+    },
+    {
+      "id": "response_controls",
+      "label": "IR and exception governance",
+      "zone": "zone_defender",
+      "kind": "control",
+      "summary": "Forensic triage, containment, rebuild decisions, exception approvals, risk acceptance, and executive reporting."
+    }
+  ],
+  "flows": [
+    {
+      "id": "flow_foothold",
+      "source": "external_access",
+      "target": "low_priv_execution",
+      "label": "post-compromise access",
+      "threats": ["spoofing", "elevation_of_privilege"],
+      "control_refs": ["least_privilege", "shell_access_review"]
+    },
+    {
+      "id": "flow_stage",
+      "source": "low_priv_execution",
+      "target": "local_staging",
+      "label": "stage artifacts",
+      "threats": ["tampering", "repudiation"],
+      "control_refs": ["file_integrity", "staging_hunts"]
+    },
+    {
+      "id": "flow_probe",
+      "source": "low_priv_execution",
+      "target": "module_surface",
+      "label": "inspect module exposure",
+      "threats": ["information_disclosure", "elevation_of_privilege"],
+      "control_refs": ["module_policy", "module_activity_hunts"]
+    },
+    {
+      "id": "flow_boundary",
+      "source": "module_surface",
+      "target": "privilege_boundary",
+      "label": "vulnerable preconditions",
+      "threats": ["elevation_of_privilege"],
+      "control_refs": ["kernel_patch", "module_policy"]
+    },
+    {
+      "id": "flow_escalate",
+      "source": "privilege_boundary",
+      "target": "root_context",
+      "label": "root impact if exploited",
+      "threats": ["elevation_of_privilege", "tampering"],
+      "control_refs": ["edr_root_transition", "incident_response"]
+    },
+    {
+      "id": "flow_access_assets",
+      "source": "root_context",
+      "target": "business_assets",
+      "label": "access or tamper",
+      "threats": ["information_disclosure", "tampering", "denial_of_service"],
+      "control_refs": ["secrets_rotation", "glpi_session_hunts"]
+    },
+    {
+      "id": "flow_prevent",
+      "source": "preventive_controls",
+      "target": "module_surface",
+      "label": "reduce exposure",
+      "threats": [],
+      "control_refs": ["kernel_patch", "module_policy"]
+    },
+    {
+      "id": "flow_detect_user",
+      "source": "detective_controls",
+      "target": "low_priv_execution",
+      "label": "hunt execution patterns",
+      "threats": [],
+      "control_refs": ["kql_sigma_osquery"]
+    },
+    {
+      "id": "flow_detect_assets",
+      "source": "detective_controls",
+      "target": "business_assets",
+      "label": "hunt session/data tampering",
+      "threats": [],
+      "control_refs": ["glpi_session_hunts"]
+    },
+    {
+      "id": "flow_respond",
+      "source": "response_controls",
+      "target": "root_context",
+      "label": "contain and recover",
+      "threats": [],
+      "control_refs": ["forensic_triage", "rebuild_decision"]
+    }
+  ],
+  "threats": [
+    {
+      "id": "spoofing",
+      "stride": "Spoofing",
+      "risk": "Medium",
+      "description": "Use of stolen credentials or service identities to obtain the local foothold required before Dirty Frag matters."
+    },
+    {
+      "id": "tampering",
+      "stride": "Tampering",
+      "risk": "High",
+      "description": "Modification of session files, web application state, security tooling, logs, or configuration after root access."
+    },
+    {
+      "id": "repudiation",
+      "stride": "Repudiation",
+      "risk": "Medium",
+      "description": "Log gaps or weak process lineage that make root-transition timelines difficult to prove."
+    },
+    {
+      "id": "information_disclosure",
+      "stride": "Information Disclosure",
+      "risk": "High",
+      "description": "Exposure of credentials, secrets, GLPI/PHP session data, kernel posture, or sensitive business data."
+    },
+    {
+      "id": "denial_of_service",
+      "stride": "Denial of Service",
+      "risk": "Medium",
+      "description": "Operational disruption from kernel instability, containment actions, emergency reboots, or incompatible module mitigations."
+    },
+    {
+      "id": "elevation_of_privilege",
+      "stride": "Elevation of Privilege",
+      "risk": "Critical",
+      "description": "A low-privileged local actor can become root if affected kernel paths and exploit preconditions align."
+    }
+  ],
+  "controls": [
+    {
+      "id": "kernel_patch",
+      "label": "Patch and reboot affected kernels",
+      "priority": "P0",
+      "control_type": "Preventive"
+    },
+    {
+      "id": "module_policy",
+      "label": "Disable or deny unused esp4, esp6, and rxrpc modules after dependency review",
+      "priority": "P0",
+      "control_type": "Preventive"
+    },
+    {
+      "id": "least_privilege",
+      "label": "Reduce unnecessary SSH, shell, sudo, and container escape blast radius",
+      "priority": "P1",
+      "control_type": "Preventive"
+    },
+    {
+      "id": "kql_sigma_osquery",
+      "label": "Deploy Dirty Frag KQL, Sigma, and osquery hunts from this repository",
+      "priority": "P1",
+      "control_type": "Detective"
+    },
+    {
+      "id": "module_activity_hunts",
+      "label": "Alert on unexpected module load, unload, and inspection activity",
+      "priority": "P1",
+      "control_type": "Detective"
+    },
+    {
+      "id": "glpi_session_hunts",
+      "label": "Investigate suspicious GLPI/PHP session modification patterns",
+      "priority": "P1",
+      "control_type": "Detective"
+    },
+    {
+      "id": "incident_response",
+      "label": "Preserve evidence, contain suspected hosts, rotate secrets, and rebuild when integrity is uncertain",
+      "priority": "P0",
+      "control_type": "Responsive"
+    }
+  ]
+}
