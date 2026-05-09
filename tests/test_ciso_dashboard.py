@@ -11,6 +11,7 @@ class CisoDashboardTests(unittest.TestCase):
     def setUpClass(cls):
         cls.data_path = Path("dashboards/dirtyfrag_ciso_dashboard.json")
         cls.html_path = Path("dashboards/dirtyfrag_ciso_dashboard.html")
+        cls.svg_path = Path("dashboards/dirtyfrag_ciso_dashboard.svg")
         cls.data = json.loads(cls.data_path.read_text(encoding="utf-8"))
 
     def test_dashboard_data_has_required_sections(self):
@@ -57,8 +58,26 @@ class CisoDashboardTests(unittest.TestCase):
         static = self.html_path.read_text(encoding="utf-8").strip()
         self.assertEqual(rendered, static)
 
+    def test_renderer_produces_dashboard_svg_visualization(self):
+        rendered = render_ciso_dashboard.render_svg(self.data)
+        self.assertIn("<svg", rendered)
+        self.assertIn('role="img"', rendered)
+        self.assertIn("Executive Dirty Frag CISO dashboard", rendered)
+        self.assertIn("Key risk indicators", rendered)
+        self.assertIn("CISO decision gates", rendered)
+        self.assertIn("Defensive use only", rendered)
+
+    def test_static_svg_matches_renderer_output(self):
+        rendered = render_ciso_dashboard.render_svg(self.data).strip()
+        static = self.svg_path.read_text(encoding="utf-8").strip()
+        self.assertEqual(rendered, static)
+
     def test_dashboard_is_non_exploitative(self):
-        combined = self.html_path.read_text(encoding="utf-8").lower() + self.data_path.read_text(encoding="utf-8").lower()
+        combined = (
+            self.html_path.read_text(encoding="utf-8").lower()
+            + self.svg_path.read_text(encoding="utf-8").lower()
+            + self.data_path.read_text(encoding="utf-8").lower()
+        )
         for forbidden in ("payload guidance", "trigger kernel memory corruption", "overwrite /etc/passwd", "spawn a root shell"):
             self.assertNotIn(forbidden, combined)
         self.assertIn("does not include exploit steps", combined)

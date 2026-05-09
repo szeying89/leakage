@@ -151,7 +151,9 @@ Residual risk remains until all affected Linux hosts are confirmed patched, rebo
 
 ## Embedded CISO dashboard visualization
 
-The operational dashboard below is embedded from [`dashboards/dirtyfrag_ciso_dashboard.json`](../dashboards/dirtyfrag_ciso_dashboard.json) so this assessment can be read as a standalone executive packet. For a styled HTML view, open [`dashboards/dirtyfrag_ciso_dashboard.html`](../dashboards/dirtyfrag_ciso_dashboard.html) or regenerate it with `python3 scripts/render_ciso_dashboard.py`.
+The operational dashboard below is embedded from [`dashboards/dirtyfrag_ciso_dashboard.json`](../dashboards/dirtyfrag_ciso_dashboard.json) so this assessment can be read as a standalone executive packet. The slide-ready visualization is checked in as [`dashboards/dirtyfrag_ciso_dashboard.svg`](../dashboards/dirtyfrag_ciso_dashboard.svg), and the styled HTML view is available at [`dashboards/dirtyfrag_ciso_dashboard.html`](../dashboards/dirtyfrag_ciso_dashboard.html). Regenerate the visual artifact with `python3 scripts/render_ciso_dashboard.py --format svg --output dashboards/dirtyfrag_ciso_dashboard.svg` and the HTML artifact with `python3 scripts/render_ciso_dashboard.py`.
+
+![Dirty Frag CISO dashboard visualization](../dashboards/dirtyfrag_ciso_dashboard.svg)
 
 ### Executive risk posture tiles
 

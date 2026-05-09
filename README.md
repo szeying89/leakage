@@ -113,7 +113,7 @@ This repository is intended for administrators, defenders, and lab validation. I
 
 ## CISO dashboard
 
-A CISO dashboard is available as a rendered HTML artifact at [`dashboards/dirtyfrag_ciso_dashboard.html`](dashboards/dirtyfrag_ciso_dashboard.html), backed by editable JSON data in [`dashboards/dirtyfrag_ciso_dashboard.json`](dashboards/dirtyfrag_ciso_dashboard.json). Regenerate it with [`scripts/render_ciso_dashboard.py`](scripts/render_ciso_dashboard.py) after updating KRIs, owners, workstreams, or decision gates.
+A CISO dashboard is available as a rendered HTML artifact at [`dashboards/dirtyfrag_ciso_dashboard.html`](dashboards/dirtyfrag_ciso_dashboard.html) and as a slide-ready SVG visualization at [`dashboards/dirtyfrag_ciso_dashboard.svg`](dashboards/dirtyfrag_ciso_dashboard.svg), backed by editable JSON data in [`dashboards/dirtyfrag_ciso_dashboard.json`](dashboards/dirtyfrag_ciso_dashboard.json). Regenerate the HTML with [`scripts/render_ciso_dashboard.py`](scripts/render_ciso_dashboard.py) and regenerate the SVG with `python3 scripts/render_ciso_dashboard.py --format svg --output dashboards/dirtyfrag_ciso_dashboard.svg` after updating KRIs, owners, workstreams, or decision gates. The CISO assessment embeds the SVG visualization in [`docs/ciso-risk-assessment-dirtyfrag.md`](docs/ciso-risk-assessment-dirtyfrag.md).
 
 ## CISO and enterprise risk assessment
 

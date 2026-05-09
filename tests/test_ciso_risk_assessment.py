@@ -43,6 +43,9 @@ class CisoRiskAssessmentTests(unittest.TestCase):
             "### CISO decision gate visualization",
             "### Dashboard data feeds",
             "dashboards/dirtyfrag_ciso_dashboard.html",
+            "dashboards/dirtyfrag_ciso_dashboard.svg",
+            "![Dirty Frag CISO dashboard visualization]",
+            "python3 scripts/render_ciso_dashboard.py --format svg --output dashboards/dirtyfrag_ciso_dashboard.svg",
         ):
             self.assertIn(expected, self.content)
         for card in dashboard["kri_cards"]:

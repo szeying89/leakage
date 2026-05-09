@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Dirty Frag CISO Dashboard visualization</title>
+  <desc id="desc">Executive Dirty Frag CISO dashboard showing risk posture, KRIs, priority assets, remediation workstreams, and decision gates for defensive risk governance.</desc>
+  <rect width="1280" height="720" fill="#0f172a"/>
+  <text x="50" y="56" font-size="32" font-weight="800" fill="#f8fafc">Dirty Frag CISO Dashboard</text>
+  <text x="50" y="86" font-size="16" font-weight="500" fill="#cbd5e1">As of 2026-05-09T00:00:00Z | Defensive executive visualization</text>
+  <g aria-label="Overall risk">
+  <rect x="50" y="124" width="202" height="92" rx="14" fill="#0b1220" stroke="#334155"/>
+  <rect x="50" y="124" width="202" height="7" rx="4" fill="#dc2626"/>
+  <text x="66" y="158" font-size="16" font-weight="700" fill="#cbd5e1">Overall risk</text>
+  <text x="66" y="197" font-size="30" font-weight="800" fill="#f8fafc">High</text>
+</g><g aria-label="Likelihood">
+  <rect x="276" y="124" width="202" height="92" rx="14" fill="#0b1220" stroke="#334155"/>
+  <rect x="276" y="124" width="202" height="7" rx="4" fill="#d97706"/>
+  <text x="292" y="158" font-size="16" font-weight="700" fill="#cbd5e1">Likelihood</text>
+  <text x="292" y="197" font-size="30" font-weight="800" fill="#f8fafc">Medium</text>
+</g><g aria-label="Impact">
+  <rect x="502" y="124" width="202" height="92" rx="14" fill="#0b1220" stroke="#334155"/>
+  <rect x="502" y="124" width="202" height="7" rx="4" fill="#dc2626"/>
+  <text x="518" y="158" font-size="16" font-weight="700" fill="#cbd5e1">Impact</text>
+  <text x="518" y="197" font-size="30" font-weight="800" fill="#f8fafc">High</text>
+</g><g aria-label="Urgency">
+  <rect x="728" y="124" width="202" height="92" rx="14" fill="#0b1220" stroke="#334155"/>
+  <rect x="728" y="124" width="202" height="7" rx="4" fill="#dc2626"/>
+  <text x="744" y="158" font-size="16" font-weight="700" fill="#cbd5e1">Urgency</text>
+  <text x="744" y="197" font-size="30" font-weight="800" fill="#f8fafc">High</text>
+</g><g aria-label="Confidence">
+  <rect x="954" y="124" width="202" height="92" rx="14" fill="#0b1220" stroke="#334155"/>
+  <rect x="954" y="124" width="202" height="7" rx="4" fill="#d97706"/>
+  <text x="970" y="158" font-size="16" font-weight="700" fill="#cbd5e1">Confidence</text>
+  <text x="970" y="197" font-size="30" font-weight="800" fill="#f8fafc">Medium-High</text>
+</g>
+  <rect x="50" y="248" width="1130" height="282" rx="18" fill="#111827" stroke="#334155"/>
+<rect x="50" y="248" width="1130" height="8" rx="4" fill="#38bdf8"/>
+<text x="68" y="284" font-size="18" font-weight="700" fill="#f8fafc">Key risk indicators</text>
+  <g aria-label="KRI Patch and reboot compliance">
+  <rect x="50" y="286" width="348" height="96" rx="12" fill="#0b1220" stroke="#334155"/>
+  <circle cx="74" cy="314" r="8" fill="#d97706"/>
+  <text x="94" y="318" font-size="17" font-weight="700" fill="#f8fafc">Patch and reboot compliance</text>
+  <text x="68" y="348" font-size="14" font-weight="500" fill="#cbd5e1">Value: TBD | Status: needs-data</text>
+  <text x="68" y="370" font-size="13" font-weight="400" fill="#94a3b8">Owner: Infrastructure / Platform Engineering</text>
+</g><g aria-label="KRI High-value hosts with unknown posture">
+  <rect x="433" y="286" width="348" height="96" rx="12" fill="#0b1220" stroke="#334155"/>
+  <circle cx="457" cy="314" r="8" fill="#d97706"/>
+  <text x="477" y="318" font-size="17" font-weight="700" fill="#f8fafc">High-value hosts with unknown posture</text>
+  <text x="451" y="348" font-size="14" font-weight="500" fill="#cbd5e1">Value: TBD | Status: needs-data</text>
+  <text x="451" y="370" font-size="13" font-weight="400" fill="#94a3b8">Owner: Vulnerability Management</text>
+</g><g aria-label="KRI Relevant modules loaded without exception">
+  <rect x="816" y="286" width="348" height="96" rx="12" fill="#0b1220" stroke="#334155"/>
+  <circle cx="840" cy="314" r="8" fill="#d97706"/>
+  <text x="860" y="318" font-size="17" font-weight="700" fill="#f8fafc">Relevant modules loaded without exception</text>
+  <text x="834" y="348" font-size="14" font-weight="500" fill="#cbd5e1">Value: TBD | Status: needs-data</text>
+  <text x="834" y="370" font-size="13" font-weight="400" fill="#94a3b8">Owner: Network / Platform Engineering</text>
+</g><g aria-label="KRI Detection telemetry coverage">
+  <rect x="50" y="406" width="348" height="96" rx="12" fill="#0b1220" stroke="#334155"/>
+  <circle cx="74" cy="434" r="8" fill="#d97706"/>
+  <text x="94" y="438" font-size="17" font-weight="700" fill="#f8fafc">Detection telemetry coverage</text>
+  <text x="68" y="468" font-size="14" font-weight="500" fill="#cbd5e1">Value: TBD | Status: needs-data</text>
+  <text x="68" y="490" font-size="13" font-weight="400" fill="#94a3b8">Owner: SOC / Detection Engineering</text>
+</g><g aria-label="KRI Suspicious escalation investigations">
+  <rect x="433" y="406" width="348" height="96" rx="12" fill="#0b1220" stroke="#334155"/>
+  <circle cx="457" cy="434" r="8" fill="#d97706"/>
+  <text x="477" y="438" font-size="17" font-weight="700" fill="#f8fafc">Suspicious escalation investigations</text>
+  <text x="451" y="468" font-size="14" font-weight="500" fill="#cbd5e1">Value: TBD | Status: needs-data</text>
+  <text x="451" y="490" font-size="13" font-weight="400" fill="#94a3b8">Owner: Incident Response</text>
+</g><g aria-label="KRI Risk exceptions past due">
+  <rect x="816" y="406" width="348" height="96" rx="12" fill="#0b1220" stroke="#334155"/>
+  <circle cx="840" cy="434" r="8" fill="#d97706"/>
+  <text x="860" y="438" font-size="17" font-weight="700" fill="#f8fafc">Risk exceptions past due</text>
+  <text x="834" y="468" font-size="14" font-weight="500" fill="#cbd5e1">Value: TBD | Status: needs-data</text>
+  <text x="834" y="490" font-size="13" font-weight="400" fill="#94a3b8">Owner: GRC / Risk Owners</text>
+</g>
+  <rect x="50" y="552" width="385" height="138" rx="18" fill="#111827" stroke="#334155"/>
+<rect x="50" y="552" width="385" height="8" rx="4" fill="#dc2626"/>
+<text x="68" y="588" font-size="18" font-weight="700" fill="#f8fafc">Priority assets</text>
+  <g>
+  <rect x="62" y="596" width="22" height="22" rx="4" fill="#7f1d1d"/>
+  <text x="96" y="613" font-size="15" font-weight="700" fill="#f8fafc">Internet-facing Linux servers</text>
+  <text x="352" y="613" font-size="14" font-weight="700" fill="#fde68a">Critical</text>
+</g><g>
+  <rect x="62" y="620" width="22" height="22" rx="4" fill="#7f1d1d"/>
+  <text x="96" y="637" font-size="15" font-weight="700" fill="#f8fafc">Container and Kubernetes nodes</text>
+  <text x="352" y="637" font-size="14" font-weight="700" fill="#fde68a">Critical</text>
+</g><g>
+  <rect x="62" y="644" width="22" height="22" rx="4" fill="#78350f"/>
+  <text x="96" y="661" font-size="15" font-weight="700" fill="#f8fafc">VPN/IPsec/RxRPC-dependent infrastructure</text>
+  <text x="352" y="661" font-size="14" font-weight="700" fill="#fde68a">High</text>
+</g><g>
+  <rect x="62" y="668" width="22" height="22" rx="4" fill="#78350f"/>
+  <text x="96" y="685" font-size="15" font-weight="700" fill="#f8fafc">GLPI/PHP application servers</text>
+  <text x="352" y="685" font-size="14" font-weight="700" fill="#fde68a">High</text>
+</g><g>
+  <rect x="62" y="692" width="22" height="22" rx="4" fill="#78350f"/>
+  <text x="96" y="709" font-size="15" font-weight="700" fill="#f8fafc">CI/CD runners and build agents</text>
+  <text x="352" y="709" font-size="14" font-weight="700" fill="#fde68a">High</text>
+</g>
+  <rect x="465" y="552" width="415" height="138" rx="18" fill="#111827" stroke="#334155"/>
+<rect x="465" y="552" width="415" height="8" rx="4" fill="#d97706"/>
+<text x="483" y="588" font-size="18" font-weight="700" fill="#f8fafc">Remediation workstreams</text>
+  <g>
+  <circle cx="493" cy="607" r="8" fill="#d97706"/>
+  <text x="513" y="613" font-size="15" font-weight="700" fill="#f8fafc">Patch and reboot</text>
+  <text x="742" y="613" font-size="13" font-weight="500" fill="#cbd5e1">First 24-72 hours</text>
+</g><g>
+  <circle cx="493" cy="631" r="8" fill="#d97706"/>
+  <text x="513" y="637" font-size="15" font-weight="700" fill="#f8fafc">Module exposure review</text>
+  <text x="742" y="637" font-size="13" font-weight="500" fill="#cbd5e1">First 24-72 hours</text>
+</g><g>
+  <circle cx="493" cy="655" r="8" fill="#d97706"/>
+  <text x="513" y="661" font-size="15" font-weight="700" fill="#f8fafc">Threat hunting deployment</text>
+  <text x="742" y="661" font-size="13" font-weight="500" fill="#cbd5e1">First 24-72 hours</text>
+</g><g>
+  <circle cx="493" cy="679" r="8" fill="#d97706"/>
+  <text x="513" y="685" font-size="15" font-weight="700" fill="#f8fafc">Linux access hardening</text>
+  <text x="742" y="685" font-size="13" font-weight="500" fill="#cbd5e1">First 30 days</text>
+</g><g>
+  <circle cx="493" cy="703" r="8" fill="#d97706"/>
+  <text x="513" y="709" font-size="15" font-weight="700" fill="#f8fafc">Exception governance</text>
+  <text x="742" y="709" font-size="13" font-weight="500" fill="#cbd5e1">First 30 days</text>
+</g>
+  <rect x="910" y="552" width="270" height="138" rx="18" fill="#111827" stroke="#334155"/>
+<rect x="910" y="552" width="270" height="8" rx="4" fill="#2563eb"/>
+<text x="928" y="588" font-size="18" font-weight="700" fill="#f8fafc">CISO decision gates</text>
+  <g>
+  <rect x="930" y="593" width="24" height="24" rx="12" fill="#1e40af"/>
+  <text x="937" y="612" font-size="14" font-weight="800" fill="#eff6ff">1</text>
+  <text x="966" y="606" font-size="13" font-weight="700" fill="#f8fafc">Internet-facing or high-value Linux host h...</text>
+  <text x="966" y="625" font-size="12" font-weight="400" fill="#cbd5e1">Patch and reboot immediately; apply enh...</text>
+</g><g>
+  <rect x="930" y="627" width="24" height="24" rx="12" fill="#1e40af"/>
+  <text x="937" y="646" font-size="14" font-weight="800" fill="#eff6ff">2</text>
+  <text x="966" y="640" font-size="13" font-weight="700" fill="#f8fafc">Host requires IPsec, VPN, or RxRPC and can...</text>
+  <text x="966" y="659" font-size="12" font-weight="400" fill="#cbd5e1">Approve temporary exception only with c...</text>
+</g><g>
+  <rect x="930" y="661" width="24" height="24" rx="12" fill="#1e40af"/>
+  <text x="937" y="680" font-size="14" font-weight="800" fill="#eff6ff">3</text>
+  <text x="966" y="674" font-size="13" font-weight="700" fill="#f8fafc">Suspicious local staging followed by root ...</text>
+  <text x="966" y="693" font-size="12" font-weight="400" fill="#cbd5e1">Treat as possible compromise; preserve ...</text>
+</g><g>
+  <rect x="930" y="695" width="24" height="24" rx="12" fill="#1e40af"/>
+  <text x="937" y="714" font-size="14" font-weight="800" fill="#eff6ff">4</text>
+  <text x="966" y="708" font-size="13" font-weight="700" fill="#f8fafc">Confirmed exploitation or strong indicator...</text>
+  <text x="966" y="727" font-size="12" font-weight="400" fill="#cbd5e1">Treat as full host compromise and valid...</text>
+</g>
+  <rect x="50" y="698" width="1130" height="1" fill="#334155"/>
+  <text x="50" y="714" font-size="12" font-weight="500" fill="#94a3b8">Defensive use only: tracks exposure, remediation, telemetry, and exceptions; excludes exploit steps and offensive guidance.</text>
+</svg>

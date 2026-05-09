@@ -7,14 +7,18 @@ The Dirty Frag CISO dashboard translates the advisory, exposure PoC, detections,
 ## Dashboard artifacts
 
 - Source data: [`dashboards/dirtyfrag_ciso_dashboard.json`](../dashboards/dirtyfrag_ciso_dashboard.json)
-- Rendered dashboard: [`dashboards/dirtyfrag_ciso_dashboard.html`](../dashboards/dirtyfrag_ciso_dashboard.html)
+- Rendered HTML dashboard: [`dashboards/dirtyfrag_ciso_dashboard.html`](../dashboards/dirtyfrag_ciso_dashboard.html)
+- Slide-ready SVG visualization: [`dashboards/dirtyfrag_ciso_dashboard.svg`](../dashboards/dirtyfrag_ciso_dashboard.svg)
 - Renderer: [`scripts/render_ciso_dashboard.py`](../scripts/render_ciso_dashboard.py)
 
-Regenerate the HTML dashboard after updating JSON values:
+Regenerate dashboard artifacts after updating JSON values:
 
 ```bash
 python3 scripts/render_ciso_dashboard.py
+python3 scripts/render_ciso_dashboard.py --format svg --output dashboards/dirtyfrag_ciso_dashboard.svg
 ```
+
+The SVG is embedded directly in the CISO risk assessment so the assessment can be used as a presentation-ready executive packet.
 
 ## Dashboard sections
 
