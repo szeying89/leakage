@@ -1,0 +1,127 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Dirty Frag post-compromise attack graph presentation attack graph</title>
+  <desc id="desc">Defensive attack path model for Dirty Frag local privilege escalation from an existing Linux foothold to root-level objectives. The diagram is defensive and omits exploit mechanics.</desc>
+  <rect width="1600" height="900" fill="#f8fafc"/>
+  <text x="70" y="70" font-size="34" font-weight="800" fill="#0f172a">Dirty Frag attack graph</text>
+  <text x="70" y="102" font-size="16" fill="#475569">Presentation view: post-compromise escalation path, controls, and detection coverage</text>
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 z" fill="#334155"/></marker>
+    <marker id="arrow-dashed" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M2,2 L10,6 L2,10 z" fill="#64748b"/></marker>
+  </defs>
+  <text x="70" y="158" font-size="13" font-weight="700" fill="#334155">Legend</text>
+  <rect x="130" y="140" width="18" height="18" rx="4" fill="#d8ecff" stroke="#2b6cb0"/>
+  <text x="156" y="154" font-size="13" fill="#334155">Access / execution</text>
+  <rect x="360" y="140" width="18" height="18" rx="4" fill="#ffe8cc" stroke="#c05621"/>
+  <text x="386" y="154" font-size="13" fill="#334155">Exposure / escalation</text>
+  <rect x="590" y="140" width="18" height="18" rx="4" fill="#fed7d7" stroke="#c53030"/>
+  <text x="616" y="154" font-size="13" fill="#334155">Post-escalation impact</text>
+  <rect x="820" y="140" width="18" height="18" rx="4" fill="#d9f99d" stroke="#3f6212"/>
+  <text x="846" y="154" font-size="13" fill="#334155">Controls / detection</text>
+  <g id="edges">
+  <path d="M 165 256 L 395 256" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="280" y="248" text-anchor="middle" font-size="10" fill="#334155">Enables</text>
+  <path d="M 395 256 L 645 151" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="520" y="196" text-anchor="middle" font-size="10" fill="#334155">Requires</text>
+  <path d="M 395 256 L 645 361" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="520" y="300" text-anchor="middle" font-size="10" fill="#334155">Leads To</text>
+  <path d="M 645 151 L 915 256" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="780" y="196" text-anchor="middle" font-size="10" fill="#334155">Requires</text>
+  <path d="M 645 361 L 915 256" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="780" y="300" text-anchor="middle" font-size="10" fill="#334155">Enables</text>
+  <path d="M 915 256 L 1175 256" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1045" y="248" text-anchor="middle" font-size="10" fill="#334155">Leads To</text>
+  <path d="M 1175 256 L 1425 151" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1300" y="196" text-anchor="middle" font-size="10" fill="#334155">Leads To</text>
+  <path d="M 1175 256 L 1425 361" fill="none" stroke="#334155" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="1300" y="300" text-anchor="middle" font-size="10" fill="#334155">Leads To</text>
+  <path d="M 640 591 L 645 151" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="8 8" marker-end="url(#arrow-dashed)"/>
+  <text x="642" y="363" text-anchor="middle" font-size="10" fill="#334155">Mitigated By</text>
+  <path d="M 970 591 L 645 361" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="8 8" marker-end="url(#arrow-dashed)"/>
+  <text x="808" y="468" text-anchor="middle" font-size="10" fill="#334155">Detected By</text>
+  <path d="M 970 591 L 1425 151" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="8 8" marker-end="url(#arrow-dashed)"/>
+  <text x="1198" y="363" text-anchor="middle" font-size="10" fill="#334155">Detected By</text>
+  <path d="M 970 591 L 645 151" fill="none" stroke="#334155" stroke-width="2" stroke-dasharray="8 8" marker-end="url(#arrow-dashed)"/>
+  <text x="808" y="363" text-anchor="middle" font-size="10" fill="#334155">Detected By</text>
+  </g>
+  <g id="nodes" font-family="Inter, Segoe UI, Arial, sans-serif">
+  <g id="n1_external_foothold" class="node access" aria-label="Initial low-privileged foothold">
+    <title>Initial low-privileged foothold</title>
+    <rect x="70" y="210" width="190" height="92" rx="14" fill="#d8ecff" stroke="#2b6cb0" stroke-width="2"/>
+    <text x="165" y="237" text-anchor="middle" font-size="15" font-weight="700" fill="#1a365d">Initial low-privileged</text>
+    <text x="165" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#1a365d">foothold</text>
+    <text x="165" y="274" text-anchor="middle" font-size="11" fill="#1a365d">Successful SSH/session</text>
+    <text x="165" y="288" text-anchor="middle" font-size="11" fill="#1a365d">telemetry</text>
+  </g>
+  <g id="n2_interactive_shell" class="node access" aria-label="Interactive shell and host discovery">
+    <title>Interactive shell and host discovery</title>
+    <rect x="300" y="210" width="190" height="92" rx="14" fill="#d8ecff" stroke="#2b6cb0" stroke-width="2"/>
+    <text x="395" y="237" text-anchor="middle" font-size="15" font-weight="700" fill="#1a365d">Interactive shell and</text>
+    <text x="395" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#1a365d">host discovery</text>
+    <text x="395" y="274" text-anchor="middle" font-size="11" fill="#1a365d">Shell child processes</text>
+  </g>
+  <g id="n3_module_exposure" class="node risk" aria-label="Dirty Frag-relevant module exposure">
+    <title>Dirty Frag-relevant module exposure</title>
+    <rect x="550" y="105" width="190" height="92" rx="14" fill="#ffe8cc" stroke="#c05621" stroke-width="2"/>
+    <text x="645" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#7b341e">Dirty Frag-relevant</text>
+    <text x="645" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="#7b341e">module exposure</text>
+    <text x="645" y="169" text-anchor="middle" font-size="11" fill="#7b341e">/proc/modules contains</text>
+    <text x="645" y="183" text-anchor="middle" font-size="11" fill="#7b341e">esp4, esp6, or rxrpc</text>
+  </g>
+  <g id="n4_local_artifact_staging" class="node access" aria-label="Local exploit artifact staged">
+    <title>Local exploit artifact staged</title>
+    <rect x="550" y="315" width="190" height="92" rx="14" fill="#d8ecff" stroke="#2b6cb0" stroke-width="2"/>
+    <text x="645" y="342" text-anchor="middle" font-size="15" font-weight="700" fill="#1a365d">Local exploit artifact</text>
+    <text x="645" y="360" text-anchor="middle" font-size="15" font-weight="700" fill="#1a365d">staged</text>
+    <text x="645" y="379" text-anchor="middle" font-size="11" fill="#1a365d">New executable in /tmp,</text>
+    <text x="645" y="393" text-anchor="middle" font-size="11" fill="#1a365d">/var/tmp, /dev/shm, web</text>
+  </g>
+  <g id="n5_dirtyfrag_lpe_attempt" class="node risk" aria-label="Dirty Frag local privilege escalation attempt">
+    <title>Dirty Frag local privilege escalation attempt</title>
+    <rect x="820" y="210" width="190" height="92" rx="14" fill="#ffe8cc" stroke="#c05621" stroke-width="2"/>
+    <text x="915" y="237" text-anchor="middle" font-size="15" font-weight="700" fill="#7b341e">Dirty Frag local</text>
+    <text x="915" y="255" text-anchor="middle" font-size="15" font-weight="700" fill="#7b341e">privilege escalation</text>
+    <text x="915" y="274" text-anchor="middle" font-size="11" fill="#7b341e">Suspicious local binary</text>
+    <text x="915" y="288" text-anchor="middle" font-size="11" fill="#7b341e">execution followed by root</text>
+  </g>
+  <g id="n6_root_context" class="node risk" aria-label="Root context obtained">
+    <title>Root context obtained</title>
+    <rect x="1080" y="210" width="190" height="92" rx="14" fill="#ffe8cc" stroke="#c05621" stroke-width="2"/>
+    <text x="1175" y="237" text-anchor="middle" font-size="15" font-weight="700" fill="#7b341e">Root context obtained</text>
+    <text x="1175" y="274" text-anchor="middle" font-size="11" fill="#7b341e">su/sudo/pkexec/new root</text>
+    <text x="1175" y="288" text-anchor="middle" font-size="11" fill="#7b341e">shell</text>
+  </g>
+  <g id="n7_session_and_glpi_tampering" class="node impact" aria-label="GLPI and PHP session tampering">
+    <title>GLPI and PHP session tampering</title>
+    <rect x="1330" y="105" width="190" height="92" rx="14" fill="#fed7d7" stroke="#c53030" stroke-width="2"/>
+    <text x="1425" y="132" text-anchor="middle" font-size="15" font-weight="700" fill="#742a2a">GLPI and PHP session</text>
+    <text x="1425" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="#742a2a">tampering</text>
+    <text x="1425" y="169" text-anchor="middle" font-size="11" fill="#742a2a">GLPI auth/LDAP file</text>
+    <text x="1425" y="183" text-anchor="middle" font-size="11" fill="#742a2a">modifications</text>
+  </g>
+  <g id="n8_credential_and_data_access" class="node impact" aria-label="Credential and sensitive data access">
+    <title>Credential and sensitive data access</title>
+    <rect x="1330" y="315" width="190" height="92" rx="14" fill="#fed7d7" stroke="#c53030" stroke-width="2"/>
+    <text x="1425" y="342" text-anchor="middle" font-size="15" font-weight="700" fill="#742a2a">Credential and</text>
+    <text x="1425" y="360" text-anchor="middle" font-size="15" font-weight="700" fill="#742a2a">sensitive data access</text>
+    <text x="1425" y="379" text-anchor="middle" font-size="11" fill="#742a2a">Reads of app configuration</text>
+    <text x="1425" y="393" text-anchor="middle" font-size="11" fill="#742a2a">and session files</text>
+  </g>
+  <g id="n9_patch_and_module_controls" class="node control" aria-label="Patch and module controls">
+    <title>Patch and module controls</title>
+    <rect x="545" y="545" width="190" height="92" rx="14" fill="#d9f99d" stroke="#3f6212" stroke-width="2"/>
+    <text x="640" y="572" text-anchor="middle" font-size="15" font-weight="700" fill="#365314">Patch and module</text>
+    <text x="640" y="590" text-anchor="middle" font-size="15" font-weight="700" fill="#365314">controls</text>
+    <text x="640" y="609" text-anchor="middle" font-size="11" fill="#365314">Remediated kernel package</text>
+    <text x="640" y="623" text-anchor="middle" font-size="11" fill="#365314">installed and booted</text>
+  </g>
+  <g id="n10_hunting_and_response" class="node control" aria-label="Hunting and response analytics">
+    <title>Hunting and response analytics</title>
+    <rect x="875" y="545" width="190" height="92" rx="14" fill="#d9f99d" stroke="#3f6212" stroke-width="2"/>
+    <text x="970" y="572" text-anchor="middle" font-size="15" font-weight="700" fill="#365314">Hunting and response</text>
+    <text x="970" y="590" text-anchor="middle" font-size="15" font-weight="700" fill="#365314">analytics</text>
+    <text x="970" y="609" text-anchor="middle" font-size="11" fill="#365314">detections/kql</text>
+  </g>
+  </g>
+  <rect x="70" y="805" width="1460" height="46" rx="12" fill="#e2e8f0"/>
+  <text x="90" y="834" font-size="14" fill="#334155">Defensive use only: use this slide to brief exposure prerequisites, business impact, patch/module controls, and detection coverage. Exploit internals are intentionally excluded.</text>
+</svg>

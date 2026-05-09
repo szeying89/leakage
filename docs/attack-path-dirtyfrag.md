@@ -89,19 +89,24 @@ flowchart LR
   class n9_patch_and_module_controls,n10_hunting_and_response control
 ```
 
+## Presentation-ready SVG visualization
+
+A 16:9 SVG version is checked in at [`attack_graph/dirtyfrag_attack_graph.svg`](../attack_graph/dirtyfrag_attack_graph.svg) for executive briefings, slide decks, and architecture reviews. It uses the same JSON graph data as the Mermaid artifact, groups nodes by access/execution, exposure/escalation, post-escalation impact, and controls/detection, and includes a defensive-use footer that explicitly excludes exploit mechanics.
+
 ## Render locally
 
-Use the renderer to regenerate Mermaid or create Graphviz DOT output from the JSON graph:
+Use the renderer to regenerate Mermaid, create the slide-ready SVG, or create Graphviz DOT output from the JSON graph:
 
 ```bash
 python3 scripts/render_attack_graph.py --format mermaid > attack_graph/dirtyfrag_attack_graph.mmd
+python3 scripts/render_attack_graph.py --format svg > attack_graph/dirtyfrag_attack_graph.svg
 python3 scripts/render_attack_graph.py --format dot > attack_graph/dirtyfrag_attack_graph.dot
 ```
 
 The generated DOT can be converted to an image if Graphviz is installed:
 
 ```bash
-dot -Tsvg attack_graph/dirtyfrag_attack_graph.dot > attack_graph/dirtyfrag_attack_graph.svg
+dot -Tsvg attack_graph/dirtyfrag_attack_graph.dot > attack_graph/dirtyfrag_attack_graph.graphviz.svg
 ```
 
 ## Node-to-detection mapping

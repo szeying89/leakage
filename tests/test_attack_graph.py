@@ -38,6 +38,20 @@ class AttackGraphTests(unittest.TestCase):
         static = Path("attack_graph/dirtyfrag_attack_graph.mmd").read_text(encoding="utf-8").strip()
         self.assertEqual(rendered, static)
 
+    def test_render_svg_is_presentation_ready(self):
+        rendered = render_attack_graph.render_svg(self.graph)
+        self.assertIn('<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"', rendered)
+        self.assertIn("Presentation view: post-compromise escalation path", rendered)
+        self.assertIn("Legend", rendered)
+        self.assertIn("Defensive use only", rendered)
+        for node in self.graph["nodes"]:
+            self.assertIn(node["label"], rendered)
+
+    def test_static_svg_matches_renderer_output(self):
+        rendered = render_attack_graph.render_svg(self.graph).strip()
+        static = Path("attack_graph/dirtyfrag_attack_graph.svg").read_text(encoding="utf-8").strip()
+        self.assertEqual(rendered, static)
+
 
 if __name__ == "__main__":
     unittest.main()
