@@ -5,13 +5,35 @@
 **Subject:** Apache HTTP Server 2.4.66 HTTP/2 double-free (possible RCE / DoS)
 **Audience:** Security leadership, vulnerability management, SOC, threat hunting
 
-> **Source-fetch caveat.** The canonical CVE record at `https://www.cve.org/CVERecord?id=CVE-2026-23918` and the MITRE/NVD JSON endpoints were not reachable from the assessment environment (host allowlist blocks `cve.org`, `cveawg.mitre.org`, and `nvd.nist.gov`; all three returned `403`). This assessment is therefore based on the public Apache advisory class (HTTP/2 double-free, 2.4.66 affected, 2.4.67 fixed), the broader history of Apache HTTP/2 memory-safety CVEs (e.g., CVE-2023-25690, CVE-2024-38473/38474, CVE-2024-27316 / "Continuation Flood"), and the artefacts already in this repository. Differences noted below should be re-validated against the canonical CVE record once it is reachable.
+> **Source provenance.** The canonical CVE record at `https://www.cve.org/CVERecord?id=CVE-2026-23918`, the MITRE CVE Services JSON, and `https://nvd.nist.gov/vuln/detail/CVE-2026-23918` were not directly reachable from the assessment environment (host allowlist blocks them; all returned `403`). The canonical CNA record and NVD enrichment data were supplied to this assessor out-of-band on 2026-05-10 and are treated as authoritative below. The NIST NVD CVSS assessment itself is still pending; CISA-ADP has provided the only published CVSS vector at the time of assessment.
+
+### Canonical record (as supplied)
+
+| Field | Value |
+|---|---|
+| CVE ID | CVE-2026-23918 |
+| State | PUBLISHED |
+| Title (CNA) | Apache HTTP Server: http2: double free and possible RCE on early reset |
+| Assigning CNA | Apache Software Foundation |
+| Published | 2026-05-04 |
+| Updated | 2026-05-04 |
+| Description | Double Free and possible RCE vulnerability in Apache HTTP Server with the HTTP/2 protocol. This issue affects Apache HTTP Server: 2.4.66. Users are recommended to upgrade to version 2.4.67, which fixes the issue. |
+| CWE | CWE-415 (Double Free) — sole CWE; source: Apache Software Foundation |
+| Vendor / Product | Apache Software Foundation / Apache HTTP Server |
+| Affected versions | 2.4.66 only (default status: unaffected) |
+| CPE 2.3 | `cpe:2.3:a:apache:http_server:2.4.66` |
+| NVD (NIST) CVSS | **N/A — assessment not yet provided** |
+| CISA-ADP CVSS 3.1 | **8.8 HIGH** — `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H` |
+| Reference (Apache) | https://httpd.apache.org/security/vulnerabilities_24.html (Vendor Advisory) |
+| Reference (oss-security) | http://www.openwall.com/lists/oss-security/2026/05/04/19 (Mailing List, Third Party Advisory) |
 
 ---
 
 ## 1. Executive summary
 
-CVE-2026-23918 is a memory-safety defect in Apache HTTP Server 2.4.66's HTTP/2 implementation (`mod_http2` / nghttp2 interaction). Vendor guidance classifies it as a **double-free** with **possible remote code execution**; the most reliable observable impact is **denial of service via worker crash**, with RCE possible but allocator- and build-dependent.
+CVE-2026-23918 is a **CWE-415 double-free** in Apache HTTP Server 2.4.66's HTTP/2 implementation, triggered specifically on **early stream reset**. The canonical CVE title — "http2: double free and possible RCE on early reset" — places this bug in the same family as CVE-2023-44487 ("HTTP/2 Rapid Reset") in terms of trigger mechanism (client-initiated `RST_STREAM` shortly after stream open), but with a memory-safety outcome rather than a pure resource-exhaustion outcome. The most reliable observable impact is **denial of service via worker crash**; RCE is possible but allocator- and build-dependent.
+
+The "early reset" trigger materially raises confidence in the existing repository detection strategy: the in-repo Sigma rules already key off HTTP/2 reset bursts, which is exactly the activity expected to precede or accompany exploitation attempts.
 
 My headline judgment matches the existing repository assessment in direction but diverges on three points:
 
@@ -23,24 +45,22 @@ Bottom line: patch internet-facing Apache 2.4.66 with HTTP/2 within 24 hours, in
 
 ---
 
-## 2. CVSS estimate (independent)
+## 2. CVSS — canonical (CISA-ADP) and reconciliation with my estimate
 
-Without the canonical NVD vector, my reasoned estimate for an unauthenticated, network-reachable HTTP/2 double-free against an Apache worker process is:
+**Canonical CVSS at time of assessment: CISA-ADP 8.8 HIGH** — `CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`. NIST NVD has not yet published its own assessment.
 
-| Metric | Value | Rationale |
-|---|---|---|
-| Attack Vector (AV) | Network (N) | Triggered by remote HTTP/2 frames |
-| Attack Complexity (AC) | High (H) | Memory-corruption races on HTTP/2 streams are notoriously timing/allocator-sensitive |
-| Privileges Required (PR) | None (N) | Pre-auth from any HTTP/2 client |
-| User Interaction (UI) | None (N) | Server-side processing of attacker-controlled frames |
-| Scope (S) | Unchanged (U) | Crash/RCE in the Apache process; OS-level scope shift is build-dependent |
-| Confidentiality (C) | High (H) if RCE achieved, else None | Conditional on reliable exploitation |
-| Integrity (I) | High (H) if RCE achieved, else None | Same condition |
-| Availability (A) | High (H) | Crash storm / worker restart loop is the most reliable outcome |
+| Metric | CISA-ADP | My earlier estimate | Reconciliation |
+|---|---|---|---|
+| AV | Network | Network | Match |
+| AC | **Low** | High | **CISA-ADP picks Low.** I was too conservative; the "early reset" trigger is documented and reproducible enough that AC:L is defensible. My contingency note (the "if NVD picks AC:L it goes to 9.8" line) anticipated this direction but the simultaneous PR:L pulls the score back. |
+| PR | **Low** | None | **CISA-ADP picks Low.** This is the unexpected one. PR:L typically implies basic authenticated access. For a pre-auth HTTP/2 protocol bug this is unusual; possible interpretations: (a) CISA-ADP is treating successful HTTP/2 stream establishment (post-handshake) as a low-privilege state; (b) the bug is reachable on virtual hosts that gate HTTP/2 behind auth in common deployments; (c) conservative scoring choice. NIST NVD's eventual rating will likely either confirm PR:L or move to PR:N (raising the score to 9.8 Critical). |
+| UI | None | None | Match |
+| S | Unchanged | Unchanged | Match |
+| C / I / A | High / High / High | High / High / High | Match |
 
-**Estimated CVSS v3.1 base score: 8.1 (High)** — vector `AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H`.
+**Operational implication.** Use **8.8 HIGH** for SLA tooling, dashboards, and exception workflows today. Document **9.8 Critical** as the contingency rating if NIST NVD subsequently re-scores PR:N. Both ratings keep this in the "patch fast" tier — the band difference does not change the patch SLA the existing risk assessment recommends (24h external / 72h internal-broad-reach), but it does affect compliance frameworks that key strict thresholds at 9.0+.
 
-If the canonical record assigns AC:L (low complexity), the score rises to **9.8 (Critical)**. Given the bug class, AC:H is more defensible; I would not be surprised if NVD picks AC:L based on the public-reachability surface alone, and I flag this as a likely point of divergence to verify.
+**Why CISA-ADP and not NIST NVD?** CISA Authorized Data Publishers (ADPs) are an extension to the CVE Program where partners can enrich CVE records before NVD finalises its own assessment. CISA-ADP scores are authoritative-by-publisher but are not NIST's NVD score. When NIST NVD publishes its own vector, it should be treated as the primary CVSS for downstream consumers; until then, CISA-ADP is the best-available canonical score.
 
 ---
 
@@ -48,10 +68,10 @@ If the canonical record assigns AC:L (low complexity), the score rises to **9.8 
 
 | # | Judgment | Confidence | Rationale |
 |---|---|---|---|
-| KJ-1 | Public reliable RCE PoCs against default Apache builds are **unlikely within 30 days**; DoS PoCs are likely within days. | Moderate | Historical pattern for HTTP/2 memory-corruption bugs (CVE-2023-25690, CVE-2024-27316). Crash repros emerge fast; weaponised RCE lags. |
+| KJ-1 | Public reliable RCE PoCs against default Apache builds are **unlikely within 30 days**; DoS PoCs are likely within days. **The "early reset" trigger lowers the barrier to crash repro** — anyone with an HTTP/2 client and a stream-reset script can probe. | Moderate | Historical pattern for HTTP/2 memory-corruption bugs (CVE-2023-25690, CVE-2024-27316). The HTTP/2 Rapid Reset family (CVE-2023-44487) had public crash/exhaustion PoCs within hours; the same is plausible here. Weaponised RCE still lags because primitive shaping needs allocator analysis. |
 | KJ-2 | The dominant adversary class in the first 60 days will be **opportunistic scanners and disruption-motivated actors**, not targeted RCE-capable groups. | Moderate-High | Bug-class precedent and the absence (so far) of ransomware-affiliate adoption signals. |
 | KJ-3 | Edge HTTP/2 termination at a **patched** L7 proxy (Cloudflare, Envoy, modern HAProxy, AWS ALB) materially reduces but does **not** eliminate risk if the proxy re-uses HTTP/2 to the Apache origin. | High | HTTP/2-to-origin is increasingly common; protocol downgrade at the proxy is the actual mitigation. |
-| KJ-4 | The most valuable detection telemetry is **Apache worker SIGSEGV/SIGABRT events correlated with HTTP/2 reset/abort bursts in the same minute window**, not either signal alone. | High | Either signal alone has noisy precedent (load tests, network blips, application bugs). Correlation is the discriminator. |
+| KJ-4 | The most valuable detection telemetry is **Apache worker SIGSEGV/SIGABRT events correlated with HTTP/2 reset/abort bursts in the same minute window**, not either signal alone. **Confidence raised** by the canonical "early reset" trigger now confirming reset bursts are mechanism-aligned, not just incidental. | High | The canonical CVE title explicitly attributes the bug to "early reset," meaning client-initiated `RST_STREAM` is the trigger. This makes HTTP/2 reset telemetry the highest-signal detection input rather than a generic anomaly indicator. |
 | KJ-5 | Vendor-packaged Apache binaries (RHEL, Ubuntu, Amazon Linux, cPanel/EasyApache) will receive **backported fixes** that retain the `2.4.66` version string. Version-string-only inventory checks will produce false positives. | High | Standard distro practice; observed for every prior Apache CVE. |
 | KJ-6 | Container images and "frozen" application-vendored Apache builds (CMS appliances, network-device admin UIs, embedded management consoles) are the **highest-risk long-tail** because they are rarely patched after deployment. | Moderate-High | Pattern observed across Log4Shell, Spring4Shell, Apache mod_proxy CVEs. |
 | KJ-7 | Insider/lateral attack via internal Apache 2.4.66 is plausible but **not the primary vector** for opportunistic actors in the early window. | Moderate | Depends heavily on org-specific endpoint hygiene. |
@@ -62,12 +82,21 @@ If the canonical record assigns AC:L (low complexity), the score rises to **9.8 
 
 | Fact | Source | Confidence |
 |---|---|---|
-| CVE-2026-23918 affects Apache HTTP Server 2.4.66 | Apache `httpd` 2.4 vulnerabilities page (per repo references) | High |
-| Fixed in Apache HTTP Server 2.4.67 | Same | High |
-| Vulnerability class is HTTP/2 double-free with possible RCE | Same | High |
-| 2.4.67 released 2026-05-04 | Apache page (per repo references) | High — but the canonical CVE timeline (CVE record assignment, public disclosure, NVD enrichment) was **not verifiable** because cve.org / NVD were unreachable from this environment. |
-| cPanel published EasyApache 4 guidance | Repository reference to cPanel KB | Moderate (not independently verified here) |
-| CVSS score | **Not verified** — NVD unreachable | Low |
+| CVE ID, state, title | Canonical CVE record | High (verbatim) |
+| Trigger condition: **early HTTP/2 stream reset** | Canonical CVE title | High |
+| CWE: 415 (Double Free) — sole CWE; source ASF | Canonical CVE record | High |
+| Affected versions: Apache HTTP Server **2.4.66 only** (default status: unaffected) | Canonical CVE record | High |
+| CPE 2.3: `cpe:2.3:a:apache:http_server:2.4.66` | NVD enrichment | High |
+| Fixed in Apache HTTP Server 2.4.67 | Canonical CVE description | High |
+| Possible RCE (vendor-acknowledged, not asserted as confirmed in the wild) | Canonical CVE description: "Double Free and possible RCE vulnerability" | High |
+| Assigning CNA: Apache Software Foundation | Canonical CVE record | High |
+| Published / Updated: 2026-05-04 (single date) | Canonical CVE record | High |
+| **CVSS 3.1 (CISA-ADP): 8.8 HIGH — `AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`** | NVD enrichment (CISA-ADP) | High |
+| **NIST NVD CVSS: not yet provided** | NVD enrichment | High (the absence is itself a fact) |
+| Public reference: Apache vendor advisory | NVD references | High |
+| Public reference: oss-security mailing list post 2026-05-04 (entry 19) | NVD references | High |
+| 2.4.67 release date | Repository's Apache-page reference (2026-05-04) — consistent with CVE Published date | High |
+| cPanel EasyApache 4 guidance exists | Repository reference; not independently verified here | Moderate |
 
 ---
 
@@ -134,7 +163,7 @@ The existing assessment's detection priorities are sound. My additions:
 | D-1 | Exploit maturity expectation | "Public exploit chatter should be assumed likely" | Reliable RCE PoCs unlikely within 30 days; DoS PoCs likely within days | Drives whether the 24h SLA is "patch or compensating control" vs. "patch, full stop." |
 | D-2 | Internal broad-reach risk rating | High | Medium-High (conditional on org foothold posture) | Affects prioritisation order between internet edge and internal patch waves. |
 | D-3 | RCE vs. DoS framing | Treats RCE and DoS as near-co-equal planning scenarios | DoS is the *primary* near-term operational risk; RCE is a contingent tail risk | Communications framing to executives: "service availability" vs. "data breach" reads very differently. |
-| D-4 | CVSS | Not stated | Estimated 8.1 (High); could be 9.8 (Critical) if NVD picks AC:L | Procurement, compliance, and SLA tooling often key off CVSS — a number should be present. |
+| D-4 | CVSS | Not stated | **Canonical (CISA-ADP): 8.8 HIGH** — `AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H`. NIST NVD assessment still pending. | Procurement, compliance, and SLA tooling often key off CVSS — a number should be present. The existing assessment should be updated to cite CISA-ADP 8.8 with a note that NIST NVD is not yet provided. |
 | D-5 | Containerised / appliance-embedded Apache | Mentioned only generally under "internal" | Called out as a distinct, separately-prioritised risk class | This is empirically the slowest-to-patch surface in every prior Apache CVE. |
 | D-6 | Proxy-to-origin HTTP/2 leg | Mentioned but not specifically as a 1-day audit task | Explicit, prioritised as an early action | Reclassifies inventory faster than scanner-based version detection. |
 | D-7 | MPM / allocator inventory | Not addressed | Recommended | Affects exploit reliability assessment and crash-signature tuning. |
@@ -181,18 +210,18 @@ The existing immediate-controls list is sound. I add:
 
 ## 11. Confidence and gaps
 
-**Overall confidence: Moderate.**
+**Overall confidence: Moderate-High** (raised from "Moderate" after canonical record and NVD enrichment were supplied).
 
-- High confidence on bug class, affected/fixed versions, and remediation direction (these are vendor-stated and consistent with bug-class history).
-- Moderate confidence on exploitation timeline and adversary class fit (based on bug-class precedent).
-- Low confidence on CVSS, exact CVE timeline, and any claim derived from sources I could not reach (cve.org, MITRE CVE Services API, NVD).
+- High confidence on bug class (CWE-415), trigger mechanism ("early reset"), affected/fixed versions, CVSS (CISA-ADP), references, and remediation direction.
+- Moderate confidence on exploitation timeline and adversary class fit (based on bug-class precedent and the now-confirmed Rapid-Reset-family trigger).
+- Low confidence on whether NIST NVD will retain CISA-ADP's PR:L or move to PR:N (which would raise the score to 9.8 Critical).
 
-Key gaps not addressable from this environment:
+Remaining gaps:
 
-- Canonical CVE record content (description, CWE, CVSS, references list).
-- NVD enrichment (CPE list, CVSS v3 / v4, references).
-- Live exploit-tracking sources (vulncheck, exploit-db, public PoCs).
-- Vendor advisory content beyond what is referenced in the repository.
+- **NIST NVD CVSS assessment** is still pending. Re-check `https://nvd.nist.gov/vuln/detail/CVE-2026-23918` periodically; the assessment may shift to PR:N → 9.8 Critical.
+- **Live exploit-tracking sources** (vulncheck, exploit-db, public PoC repositories) are unreachable from this environment.
+- **In-the-wild exploitation status** is not stated in the canonical record; CISA KEV inclusion (or non-inclusion) should be checked separately.
+- The **oss-security 2026-05-04 entry 19** post body has not been read; it likely contains additional reproduction or mitigation detail that this assessment does not yet incorporate.
 
 ---
 
@@ -206,10 +235,18 @@ Both assessments converge on action; they differ on framing, confidence calibrat
 
 ## References
 
-- `threat-intel/cve-2026-23918-intel-assessment.md` (in this repository) — assessment under comparison
-- `threat-hunting/sigma/README.md` — deployable detection pack (note: 8 documented bugs in current rules, see "Known bugs" section)
+**Canonical (per NVD enrichment, supplied to assessor out-of-band):**
+
+- Apache vendor advisory: https://httpd.apache.org/security/vulnerabilities_24.html (Vendor Advisory)
+- oss-security mailing list, 2026-05-04 entry 19: http://www.openwall.com/lists/oss-security/2026/05/04/19 (Mailing List, Third Party Advisory)
+- CVE record (cve.org / MITRE): https://www.cve.org/CVERecord?id=CVE-2026-23918
+- NVD detail page: https://nvd.nist.gov/vuln/detail/CVE-2026-23918
+
+**Repository artefacts:**
+
+- `threat-intel/cve-2026-23918-intel-assessment.md` — assessment under comparison
+- `threat-hunting/sigma/README.md` — deployable detection pack (8 documented bugs in current rules, see "Known bugs" section)
 - `attack-paths/cve-2026-23918.md` — attack-graph mapping
 - `risk-assessments/cve-2026-23918-risk-assessment.md` — risk scenario matrix
-- Apache HTTP Server 2.4 vulnerabilities page (referenced indirectly; not fetched in this environment)
-- CVE record at cve.org — **not reachable from assessment environment (HTTP 403 from host allowlist)**
-- NVD detail page — **not reachable from assessment environment (HTTP 403 from host allowlist)**
+
+**Note on environment access:** All canonical sources above (`cve.org`, `cveawg.mitre.org`, `nvd.nist.gov`, `httpd.apache.org`, `openwall.com`) returned `403 Host not in allowlist` when fetched from this assessment environment. The canonical record and NVD enrichment data were therefore supplied to this assessor out-of-band. Future verification rounds should re-check the canonical sources directly (especially for the eventual NIST NVD CVSS rating, which was N/A at time of assessment).
