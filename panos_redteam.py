@@ -352,6 +352,55 @@ class CVEModule:
             log.info(f"[CVE] {cve} — management interface not reachable at /php/login.php")
         return result
 
+    # ------------------------------------------------------------------
+    # CVE-2026-0300 — Unauthenticated buffer overflow → root RCE (CVSS critical)
+    # In the User-ID Authentication Portal (Captive Portal) service. A remote
+    # unauthenticated attacker sends specially crafted packets to overflow a
+    # buffer and execute code as root. Actively exploited (CISA KEV 2026-05-06).
+    # Affects: PA-Series / VM-Series firewalls configured to use the User-ID
+    #   Authentication Portal. NOT affected: Prisma Access, Cloud NGFW, Panorama.
+    # Fixed in (partial list): 12.1.4-h5, 12.1.7, 11.2.7-h13, 11.2.10-h6,
+    #   11.2.4-h17, 11.2.12, 11.1.4-h33, 11.1.6-h32, 11.1.10-h25, 11.1.13-h5,
+    #   11.1.7-h6, 11.1.15, 10.2.10-h36, 10.2.18-h6, 10.2.7-h34, 10.2.13-h21,
+    #   10.2.16-h7 — see advisory for the full fixed-version matrix.
+    # Ref: https://security.paloaltonetworks.com/CVE-2026-0300
+    # SAFETY: passive only. We detect Captive Portal exposure; we do NOT send
+    #   the overflow payload, which would crash the device.
+    # ------------------------------------------------------------------
+    def check_cve_2026_0300(self) -> dict:
+        cve = "CVE-2026-0300"
+        log.info(f"[CVE] {cve} — User-ID Captive Portal buffer overflow (passive check)")
+        result = {"cve": cve, "status": "not_detected", "evidence": ""}
+
+        # The Captive Portal redirects unauthenticated users to an auth page.
+        # Common landing paths used by the User-ID Authentication Portal.
+        portal_paths = [
+            "/php/captiveportal.php",
+            "/captiveportal/",
+            "/global-protect/captiveportal.esp",
+        ]
+        portal_markers = ("captive portal", "captiveportal", "user-id",
+                          "authentication portal", "cap.cgi")
+        for path in portal_paths:
+            status, _, body = self._req(path)
+            log.debug(f"[CVE] {cve} portal probe {path!r} → {status}")
+            if status in (200, 302) and any(m in body.lower() for m in portal_markers):
+                result["status"] = "attack_surface_present"
+                result["evidence"] = (
+                    f"User-ID Authentication Portal (Captive Portal) appears exposed "
+                    f"at {path}. This is the precondition for {cve}. Confirm PAN-OS "
+                    "patch level against the advisory fixed-version matrix; the bug is "
+                    "under active exploitation (CISA KEV)."
+                )
+                log.warning(f"[CVE] {cve} — {result['evidence']}")
+                return result
+
+        log.info(
+            f"[CVE] {cve} — Captive Portal not detected on tested paths. "
+            "If User-ID Authentication Portal is enabled in config, treat as exposed."
+        )
+        return result
+
     def run_all(self) -> list:
         checks = [
             self.check_cve_2025_0108,
@@ -359,6 +408,7 @@ class CVEModule:
             self.check_cve_2024_3400,
             self.check_cve_2024_9474,
             self.check_cve_2025_0111,
+            self.check_cve_2026_0300,
         ]
         results = []
         for fn in checks:
@@ -530,6 +580,36 @@ class ConfigAuditModule:
                 log.warning(f"[AUDIT] MEDIUM  syslog_no_tls in profile '{name}'")
         return findings
 
+    def _audit_captive_portal(self, config: ET.Element) -> list:
+        """Detect User-ID Authentication Portal (Captive Portal) — the precondition
+        for CVE-2026-0300. Its presence does not confirm vulnerability, but flags
+        the affected attack surface so patch level can be verified."""
+        findings = []
+        portal_nodes = (
+            config.findall(".//captive-portal")
+            + config.findall(".//user-id-collector/captive-portal")
+            + config.findall(".//authentication-portal")
+        )
+        enabled = False
+        for node in portal_nodes:
+            enable_text = node.findtext("enable", "")
+            mode = node.findtext("mode", "")
+            if enable_text == "yes" or mode or node.find("server-certificate") is not None:
+                enabled = True
+                break
+        if enabled:
+            findings.append({
+                "severity": "CRITICAL",
+                "check": "captive_portal_enabled_cve_2026_0300",
+                "detail": (
+                    "User-ID Authentication Portal (Captive Portal) is enabled — "
+                    "attack surface for CVE-2026-0300 (unauthenticated root RCE, "
+                    "actively exploited). Verify PAN-OS is patched per the advisory."
+                ),
+            })
+            log.warning("[AUDIT] CRITICAL  captive_portal_enabled_cve_2026_0300")
+        return findings
+
     def run_audit(self) -> dict:
         try:
             sysinfo = self.get_system_info()
@@ -547,6 +627,7 @@ class ConfigAuditModule:
         findings.extend(self._audit_admins(config))
         findings.extend(self._audit_snmp(config))
         findings.extend(self._audit_syslog(config))
+        findings.extend(self._audit_captive_portal(config))
 
         _sev_rank = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}
         findings.sort(key=lambda f: _sev_rank.get(f.get("severity", "LOW"), 4))
