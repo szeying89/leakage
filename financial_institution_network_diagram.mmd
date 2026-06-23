@@ -1,0 +1,108 @@
+%%{init: {'theme': 'neutral'}}%%
+flowchart TD
+    Internet([Internet / Public WAN]):::external
+    Branch([Branch Offices via MPLS/WAN]):::external
+
+    subgraph DMZ["TIER 1 — DMZ Zone (Perimeter)"]
+        direction TB
+        FW1[Perimeter Firewall<br/>Fortinet FortiGate 600E]:::firewall
+        NSEXT[Citrix NetScaler MPX<br/>External ADC / VDI Gateway-StoreFront]:::netscaler
+        WAF[Reverse Proxy / WAF<br/>F5 BIG-IP]:::server
+        WEB[Public Web/Portal Servers<br/>Dell PowerEdge R650]:::server
+        MAIL[Email Security Gateway<br/>HPE ProLiant DL380]:::server
+        DNSEXT[External DNS / NTP<br/>Lenovo ThinkSystem SR630]:::server
+    end
+
+    FW2[Internal Segmentation Firewall<br/>Palo Alto PA-5220]:::firewall
+
+    subgraph CORE["TIER 1 — Core Network"]
+        direction LR
+        CSW1[Core Switch A<br/>Cisco Catalyst 9500]:::switch
+        CSW2[Core Switch B - HA Pair<br/>Cisco Catalyst 9500]:::switch
+        CSW1 --- CSW2
+    end
+
+    subgraph DIST["TIER 2 — Distribution / Access"]
+        direction LR
+        DSW1[Distribution Switch<br/>Juniper EX4400]:::switch
+        DSW2[Access Switch<br/>Extreme Networks X670-G2]:::switch
+        DSW3[Access Switch<br/>HPE Aruba 6300]:::switch
+        DSW4[Access Switch<br/>Fortinet FortiSwitch 448E]:::switch
+        DSW1 --- DSW2
+        DSW2 --- DSW3
+        DSW3 --- DSW4
+    end
+
+    FW3[Internal Firewall<br/>Check Point Quantum]:::firewall
+
+    subgraph INTRANET["TIER 2 — Intranet / Internal Zone"]
+        direction TB
+        NSINT[Citrix NetScaler VPX<br/>Internal Load Balancer / VDI Broker]:::netscaler
+        VDI[Citrix VDA / VDI Host Farm<br/>HPE ProLiant DL360]:::server
+        AD[Active Directory Domain Controllers<br/>Dell PowerEdge R740]:::server
+        CORE_APP[Core Banking Application Servers<br/>IBM Power System S924]:::server
+        DB[Database Servers - Oracle/SQL<br/>HPE Synergy Compute]:::server
+        FILE[File & Print Servers<br/>Lenovo ThinkSystem SR650]:::server
+        SIEM[SIEM / Monitoring Server<br/>Dell PowerEdge R750]:::server
+    end
+
+    subgraph ENDPOINTS["User Endpoint Devices"]
+        direction LR
+        THINCLIENT[[VDI Thin Clients]]:::client
+        DESKTOP[[Desktop Workstations]]:::client
+        LAPTOP[[Corporate Laptops]]:::client
+        MOBILE[[Mobile / BYOD Devices]]:::client
+        POS[[Branch POS / Teller Terminals]]:::client
+    end
+
+    Internet --> FW1
+    Branch --> FW2
+    FW1 --> NSEXT
+    FW1 --> MAIL
+    FW1 --> DNSEXT
+    NSEXT --> WAF
+    WAF --> WEB
+    NSEXT --> FW2
+    WEB --> FW2
+
+    FW2 --> CSW1
+    FW2 --> CSW2
+    CSW1 --> DSW1
+    CSW2 --> DSW2
+    CSW1 --> DSW3
+
+    DSW1 --> FW3
+    DSW2 --> FW3
+    DSW3 --> FW3
+    DSW4 --> FW3
+
+    FW3 --> NSINT
+    NSINT --> VDI
+    VDI --> AD
+    VDI --> CORE_APP
+    VDI --> FILE
+    CORE_APP --> DB
+    AD --> DB
+    FW3 --> SIEM
+
+    DESKTOP --> DSW2
+    LAPTOP --> DSW3
+    MOBILE --> DSW4
+    POS --> DSW4
+    THINCLIENT --> DSW3
+    DSW3 -.VDI Session.-> NSINT
+    DSW2 -.VDI Session.-> NSINT
+
+    classDef external fill:#eceff1,stroke:#546e7a,stroke-width:1px,color:#000
+    classDef firewall fill:#ffd6d6,stroke:#b30000,stroke-width:2px,color:#000
+    classDef netscaler fill:#cfe8ff,stroke:#0050b3,stroke-width:2px,color:#000
+    classDef switch fill:#fff3cd,stroke:#a67c00,stroke-width:2px,color:#000
+    classDef server fill:#d9f7d9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef client fill:#ede0ff,stroke:#6a1b9a,stroke-width:1px,color:#000
+
+    %% Zone background colors (one distinct color per zone)
+    style DMZ fill:#fff0f0,stroke:#b30000,stroke-width:3px,color:#000
+    style CORE fill:#e8f0fe,stroke:#0d47a1,stroke-width:3px,color:#000
+    style DIST fill:#fff8e1,stroke:#a67c00,stroke-width:3px,color:#000
+    style INTRANET fill:#eafaf1,stroke:#1b5e20,stroke-width:3px,color:#000
+    style ENDPOINTS fill:#f5edff,stroke:#6a1b9a,stroke-width:3px,color:#000
