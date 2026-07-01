@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dirty Frag CISO Dashboard</title>
+  <style>
+    :root { --bg: #0f172a; --panel: #111827; --muted: #cbd5e1; --text: #f8fafc; --good: #166534; --warn: #92400e; --bad: #991b1b; --line: #334155; }
+    body { margin: 0; background: var(--bg); color: var(--text); font-family: Arial, sans-serif; line-height: 1.45; }
+    header, main { max-width: 1180px; margin: 0 auto; padding: 24px; }
+    header { border-bottom: 1px solid var(--line); }
+    h1, h2, h3 { margin-top: 0; }
+    .subtitle { color: var(--muted); max-width: 920px; }
+    .posture, .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+    .tile, .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+    .tile strong, .value { display: block; font-size: 1.8rem; margin-top: 6px; }
+    .good { border-top: 5px solid var(--good); } .warn { border-top: 5px solid var(--warn); } .bad { border-top: 5px solid var(--bad); }
+    table { border-collapse: collapse; width: 100%; background: var(--panel); margin-bottom: 28px; }
+    th, td { border: 1px solid var(--line); padding: 10px; text-align: left; vertical-align: top; }
+    th { background: #1e293b; }
+    section { margin: 28px 0; }
+    .notice { border-left: 5px solid #38bdf8; background: #0b1220; padding: 12px 16px; color: var(--muted); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Dirty Frag CISO Dashboard</h1>
+    <p class="subtitle">As of 2026-05-09T00:00:00Z. Dirty Frag is a post-compromise Linux local privilege-escalation risk that can expand a low-privileged foothold into root access on vulnerable systems. CISO priorities are kernel patch/reboot validation, local-access reduction, safe module exposure reduction, and post-compromise detection coverage.</p>
+  </header>
+  <main>
+    <section>
+      <h2>Executive risk posture</h2>
+      <div class="posture">
+        <div class="tile bad"><span>Overall risk</span><strong>High</strong></div>
+        <div class="tile warn"><span>Likelihood</span><strong>Medium</strong></div>
+        <div class="tile bad"><span>Impact</span><strong>High</strong></div>
+        <div class="tile bad"><span>Urgency</span><strong>High</strong></div>
+        <div class="tile warn"><span>Confidence</span><strong>Medium-High</strong></div>
+      </div>
+    </section>
+    <section>
+      <h2>Key risk indicators</h2>
+      <div class="cards"><section class="card warn">
+  <h3>Patch and reboot compliance</h3>
+  <p class="value">TBD</p>
+  <p><strong>Target:</strong> &gt;= 95% prioritized Linux assets booted into remediated kernels</p>
+  <p><strong>Owner:</strong> Infrastructure / Platform Engineering</p>
+</section>
+<section class="card warn">
+  <h3>High-value hosts with unknown posture</h3>
+  <p class="value">TBD</p>
+  <p><strong>Target:</strong> 0 internet-facing or crown-jewel Linux hosts with unknown kernel posture</p>
+  <p><strong>Owner:</strong> Vulnerability Management</p>
+</section>
+<section class="card warn">
+  <h3>Relevant modules loaded without exception</h3>
+  <p class="value">TBD</p>
+  <p><strong>Target:</strong> 0 unauthorized esp4, esp6, or rxrpc exposures</p>
+  <p><strong>Owner:</strong> Network / Platform Engineering</p>
+</section>
+<section class="card warn">
+  <h3>Detection telemetry coverage</h3>
+  <p class="value">TBD</p>
+  <p><strong>Target:</strong> &gt;= 90% prioritized hosts reporting process, file, auth, module, and kernel inventory telemetry</p>
+  <p><strong>Owner:</strong> SOC / Detection Engineering</p>
+</section>
+<section class="card warn">
+  <h3>Suspicious escalation investigations</h3>
+  <p class="value">TBD</p>
+  <p><strong>Target:</strong> All staging-to-root-transition alerts triaged within incident SLA</p>
+  <p><strong>Owner:</strong> Incident Response</p>
+</section>
+<section class="card warn">
+  <h3>Risk exceptions past due</h3>
+  <p class="value">TBD</p>
+  <p><strong>Target:</strong> 0 overdue Dirty Frag exceptions</p>
+  <p><strong>Owner:</strong> GRC / Risk Owners</p>
+</section></div>
+    </section>
+    <section>
+      <h2>Priority asset segments</h2>
+      <table><thead><tr><th>Asset segment</th><th>Business risk</th><th>Priority</th><th>Required action</th></tr></thead><tbody><tr><td>Internet-facing Linux servers</td><td>Compromised SSH or web-shell access can escalate to root and expose customer-facing services.</td><td>Critical</td><td>Patch and reboot first; verify shell-access controls and detection coverage.</td></tr><tr><td>Container and Kubernetes nodes</td><td>A container foothold can become host-level risk if local execution reaches the node kernel.</td><td>Critical</td><td>Validate node kernel posture, privileged container controls, host namespace restrictions, and runtime telemetry.</td></tr><tr><td>VPN/IPsec/RxRPC-dependent infrastructure</td><td>Affected modules may be operationally required, extending exposure until patched.</td><td>High</td><td>Coordinate maintenance windows, document exceptions, and increase monitoring.</td></tr><tr><td>GLPI/PHP application servers</td><td>Observed post-compromise behaviors included application and session tampering patterns.</td><td>High</td><td>Enable file/session monitoring and validate application integrity after suspected escalation.</td></tr><tr><td>CI/CD runners and build agents</td><td>Untrusted build workloads can create local execution opportunities on Linux hosts.</td><td>High</td><td>Restrict runner privileges, isolate workloads, and verify rapid patch cadence.</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>Remediation workstreams</h2>
+      <table><thead><tr><th>Workstream</th><th>Phase</th><th>Status</th><th>Success measure</th></tr></thead><tbody><tr><td>Patch and reboot</td><td>First 24-72 hours</td><td>not-started</td><td>Prioritized Linux systems are booted into vendor-remediated kernels.</td></tr><tr><td>Module exposure review</td><td>First 24-72 hours</td><td>not-started</td><td>Unused esp4, esp6, and rxrpc exposure is blocked or has approved business exceptions.</td></tr><tr><td>Threat hunting deployment</td><td>First 24-72 hours</td><td>not-started</td><td>KQL, Sigma, and osquery hunts are deployed or mapped to equivalent telemetry.</td></tr><tr><td>Linux access hardening</td><td>First 30 days</td><td>not-started</td><td>Unnecessary SSH, shell, service-account, and automation access paths are reduced.</td></tr><tr><td>Exception governance</td><td>First 30 days</td><td>not-started</td><td>All delayed patching or module-disablement exceptions are time-bound and owner-approved.</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>CISO decision gates</h2>
+      <table><thead><tr><th>Condition</th><th>CISO decision</th></tr></thead><tbody><tr><td>Internet-facing or high-value Linux host has vulnerable or unknown kernel posture</td><td>Patch and reboot immediately; apply enhanced monitoring until validated.</td></tr><tr><td>Host requires IPsec, VPN, or RxRPC and cannot disable modules</td><td>Approve temporary exception only with compensating access controls, monitoring, and committed remediation date.</td></tr><tr><td>Suspicious local staging followed by root transition is observed</td><td>Treat as possible compromise; preserve evidence, isolate as appropriate, and run incident response.</td></tr><tr><td>Confirmed exploitation or strong indicators exist</td><td>Treat as full host compromise and validate application integrity, credentials, persistence, and downstream access.</td></tr></tbody></table>
+    </section>
+    <section>
+      <h2>Required data sources</h2>
+      <ul><li>Vulnerability management kernel inventory</li><li>EDR process and file telemetry</li><li>Linux auth logs and SSH session records</li><li>Module exposure checks from dirtyfrag_poc.py or osquery</li><li>KQL/Sigma/osquery Dirty Frag hunting content</li><li>GRC exception register</li></ul>
+    </section>
+    <p class="notice">This dashboard is defensive and executive-facing. It tracks exposure, remediation, detection coverage, and exception governance; it does not include exploit steps or offensive guidance.</p>
+  </main>
+</body>
+</html>

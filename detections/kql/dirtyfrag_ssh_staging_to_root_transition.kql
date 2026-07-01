@@ -1,0 +1,32 @@
+// Dirty Frag hunt: suspicious Linux local exploit staging followed by root-transition utilities.
+// Platform: Microsoft Defender XDR Advanced Hunting.
+// Tune writable paths, service accounts, and expected administrative workflows before scheduling.
+let SuspiciousWritablePaths = dynamic(["/tmp/", "/var/tmp/", "/dev/shm/", "/run/user/", "/var/www/", "/srv/www/"]);
+let SuspiciousNames = dynamic(["update", "exploit", "poc", "dirtyfrag", "dirty_frag", "copyfail"]);
+let ShellOrWebParents = dynamic(["sshd", "bash", "sh", "dash", "zsh", "python", "python3", "php", "php-fpm", "apache2", "httpd", "nginx", "node"]);
+let StagedExecution =
+    DeviceProcessEvents
+    | where Timestamp > ago(14d)
+    | where DeviceInfo OSPlatform =~ "Linux" or FolderPath startswith "/"
+    | where InitiatingProcessFileName in~ (ShellOrWebParents)
+    | where FolderPath has_any (SuspiciousWritablePaths)
+       or FileName in~ (SuspiciousNames)
+       or ProcessCommandLine has_any ("./update", "dirtyfrag", "dirty_frag", "CVE-2026-43284", "CVE-2026-43500")
+    | project DeviceId, DeviceName, StagedTime=Timestamp, AccountName, FileName, FolderPath, ProcessCommandLine,
+              InitiatingProcessFileName, InitiatingProcessCommandLine, ReportId;
+let RootTransition =
+    DeviceProcessEvents
+    | where Timestamp > ago(14d)
+    | where FileName in~ ("su", "sudo", "pkexec", "newgrp")
+       or ProcessCommandLine has_any ("/bin/su", "/usr/bin/su", "uid=0", "euid=0")
+    | project DeviceId, TransitionTime=Timestamp, TransitionFileName=FileName,
+              TransitionCommandLine=ProcessCommandLine, TransitionParent=InitiatingProcessFileName,
+              TransitionParentCommandLine=InitiatingProcessCommandLine;
+StagedExecution
+| join kind=innerunique RootTransition on DeviceId
+| where TransitionTime between (StagedTime .. StagedTime + 30m)
+| extend Hunt="DirtyFrag_SuspiciousStaging_To_RootTransition"
+| project Hunt, DeviceName, AccountName, StagedTime, TransitionTime, FileName, FolderPath, ProcessCommandLine,
+          InitiatingProcessFileName, InitiatingProcessCommandLine, TransitionFileName, TransitionCommandLine,
+          TransitionParent, TransitionParentCommandLine, ReportId
+| order by StagedTime desc

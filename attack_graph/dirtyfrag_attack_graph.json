@@ -1,0 +1,102 @@
+{
+  "id": "dirtyfrag-post-compromise-attack-graph",
+  "name": "Dirty Frag post-compromise attack graph",
+  "summary": "Defensive attack path model for Dirty Frag local privilege escalation from an existing Linux foothold to root-level objectives.",
+  "source": "https://www.microsoft.com/en-us/security/blog/2026/05/08/active-attack-dirty-frag-linux-vulnerability-expands-post-compromise-risk/",
+  "nodes": [
+    {
+      "id": "n1_external_foothold",
+      "label": "Initial low-privileged foothold",
+      "kind": "INITIAL_ACCESS",
+      "description": "Adversary gains or already has low-privileged local execution through SSH, web shell, service account, CI runner, or container workload.",
+      "attackTechniques": ["T1078", "T1190"],
+      "evidence": ["Successful SSH/session telemetry", "Web process spawning shell", "Container shell or service account execution"]
+    },
+    {
+      "id": "n2_interactive_shell",
+      "label": "Interactive shell and host discovery",
+      "kind": "EXECUTION",
+      "description": "Actor uses shell commands to identify kernel version, user context, writable directories, and candidate escalation paths.",
+      "attackTechniques": ["T1059", "T1083", "T1082"],
+      "evidence": ["Shell child processes", "uname/id/whoami commands", "Writable-directory enumeration"]
+    },
+    {
+      "id": "n3_module_exposure",
+      "label": "Dirty Frag-relevant module exposure",
+      "kind": "EXPOSURE",
+      "description": "Host has esp4, esp6, rxrpc, or related networking functionality loaded or loadable and has not yet been remediated by a vendor kernel update.",
+      "attackTechniques": [],
+      "evidence": ["/proc/modules contains esp4, esp6, or rxrpc", "Kernel module object exists on disk", "No modprobe block rule for unused affected modules"]
+    },
+    {
+      "id": "n4_local_artifact_staging",
+      "label": "Local exploit artifact staged",
+      "kind": "EXECUTION",
+      "description": "Actor writes and executes a local ELF-style artifact from a writable path. Microsoft reported an observed artifact named ./update, but names are easily changed.",
+      "attackTechniques": ["T1059", "T1105"],
+      "evidence": ["New executable in /tmp, /var/tmp, /dev/shm, web roots, or /run/user", "Execution of ./update or similarly named local binary"]
+    },
+    {
+      "id": "n5_dirtyfrag_lpe_attempt",
+      "label": "Dirty Frag local privilege escalation attempt",
+      "kind": "PRIVILEGE_ESCALATION",
+      "description": "Existing local foothold attempts to abuse Dirty Frag kernel behavior to transition from low privilege to root. This graph deliberately does not encode exploit mechanics.",
+      "attackTechniques": ["T1068"],
+      "evidence": ["Suspicious local binary execution followed by root transition", "Kernel crash/anomaly telemetry", "Unexpected root-owned child process from low-privileged session"]
+    },
+    {
+      "id": "n6_root_context",
+      "label": "Root context obtained",
+      "kind": "PRIVILEGE_ESCALATION",
+      "description": "Actor obtains UID 0 context and can alter host state, disable controls, or access sensitive application data.",
+      "attackTechniques": ["T1068", "T1548"],
+      "evidence": ["su/sudo/pkexec/new root shell", "Root-owned process tree after low-privileged staging", "New or modified SUID/SGID file"]
+    },
+    {
+      "id": "n7_session_and_glpi_tampering",
+      "label": "GLPI and PHP session tampering",
+      "kind": "DEFENSE_EVASION",
+      "description": "Actor modifies GLPI-related authentication files or deletes/wipes PHP session files to remove evidence or affect application access.",
+      "attackTechniques": ["T1070", "T1552"],
+      "evidence": ["GLPI auth/LDAP file modifications", "Vim swap files in GLPI paths", "PHP session deletion or truncation"]
+    },
+    {
+      "id": "n8_credential_and_data_access",
+      "label": "Credential and sensitive data access",
+      "kind": "CREDENTIAL_ACCESS",
+      "description": "Root context allows access to application configuration, session data, local credentials, tokens, and other sensitive host data.",
+      "attackTechniques": ["T1552", "T1005"],
+      "evidence": ["Reads of app configuration and session files", "Access to secrets, tokens, or LDAP configuration", "Unusual root reads from service directories"]
+    },
+    {
+      "id": "n9_patch_and_module_controls",
+      "label": "Patch and module controls",
+      "kind": "CONTROL",
+      "description": "Vendor kernel remediation, reboot compliance, and disabling unused esp4, esp6, or rxrpc modules reduce the attack path.",
+      "attackTechniques": [],
+      "evidence": ["Remediated kernel package installed and booted", "Unused modules blocked by modprobe", "Business owner validation for IPsec/RxRPC usage"]
+    },
+    {
+      "id": "n10_hunting_and_response",
+      "label": "Hunting and response analytics",
+      "kind": "DETECTION",
+      "description": "KQL, Sigma, osquery, and PoC artifacts in this repository provide behavior hunting, exposure checks, and triage leads.",
+      "attackTechniques": [],
+      "evidence": ["detections/kql", "detections/sigma", "detections/osquery", "dirtyfrag_poc.py"]
+    }
+  ],
+  "edges": [
+    {"source": "n1_external_foothold", "target": "n2_interactive_shell", "kind": "ENABLES", "label": "foothold enables shell execution", "confidence": "high"},
+    {"source": "n2_interactive_shell", "target": "n3_module_exposure", "kind": "REQUIRES", "label": "actor validates vulnerable host conditions", "confidence": "medium"},
+    {"source": "n2_interactive_shell", "target": "n4_local_artifact_staging", "kind": "LEADS_TO", "label": "actor stages local artifact", "confidence": "high"},
+    {"source": "n3_module_exposure", "target": "n5_dirtyfrag_lpe_attempt", "kind": "REQUIRES", "label": "vulnerable/local exposure is a precondition", "confidence": "high"},
+    {"source": "n4_local_artifact_staging", "target": "n5_dirtyfrag_lpe_attempt", "kind": "ENABLES", "label": "local artifact launches escalation attempt", "confidence": "high"},
+    {"source": "n5_dirtyfrag_lpe_attempt", "target": "n6_root_context", "kind": "LEADS_TO", "label": "successful local exploit yields root", "confidence": "medium"},
+    {"source": "n6_root_context", "target": "n7_session_and_glpi_tampering", "kind": "LEADS_TO", "label": "root enables application/session tampering", "confidence": "medium"},
+    {"source": "n6_root_context", "target": "n8_credential_and_data_access", "kind": "LEADS_TO", "label": "root enables sensitive data access", "confidence": "high"},
+    {"source": "n9_patch_and_module_controls", "target": "n3_module_exposure", "kind": "MITIGATED_BY", "label": "patching and module policy reduce exposure", "confidence": "high"},
+    {"source": "n10_hunting_and_response", "target": "n4_local_artifact_staging", "kind": "DETECTED_BY", "label": "staging hunts detect suspicious local artifact execution", "confidence": "medium"},
+    {"source": "n10_hunting_and_response", "target": "n7_session_and_glpi_tampering", "kind": "DETECTED_BY", "label": "file hunts detect GLPI/PHP session tampering", "confidence": "medium"},
+    {"source": "n10_hunting_and_response", "target": "n3_module_exposure", "kind": "DETECTED_BY", "label": "PoC and osquery detect module exposure", "confidence": "high"}
+  ]
+}

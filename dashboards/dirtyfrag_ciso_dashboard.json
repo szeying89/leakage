@@ -1,0 +1,146 @@
+{
+  "title": "Dirty Frag CISO Dashboard",
+  "as_of": "2026-05-09T00:00:00Z",
+  "risk_posture": {
+    "overall_risk": "High",
+    "likelihood": "Medium",
+    "impact": "High",
+    "urgency": "High",
+    "confidence": "Medium-High",
+    "executive_summary": "Dirty Frag is a post-compromise Linux local privilege-escalation risk that can expand a low-privileged foothold into root access on vulnerable systems. CISO priorities are kernel patch/reboot validation, local-access reduction, safe module exposure reduction, and post-compromise detection coverage."
+  },
+  "kri_cards": [
+    {
+      "name": "Patch and reboot compliance",
+      "value": "TBD",
+      "target": ">= 95% prioritized Linux assets booted into remediated kernels",
+      "status": "needs-data",
+      "owner": "Infrastructure / Platform Engineering"
+    },
+    {
+      "name": "High-value hosts with unknown posture",
+      "value": "TBD",
+      "target": "0 internet-facing or crown-jewel Linux hosts with unknown kernel posture",
+      "status": "needs-data",
+      "owner": "Vulnerability Management"
+    },
+    {
+      "name": "Relevant modules loaded without exception",
+      "value": "TBD",
+      "target": "0 unauthorized esp4, esp6, or rxrpc exposures",
+      "status": "needs-data",
+      "owner": "Network / Platform Engineering"
+    },
+    {
+      "name": "Detection telemetry coverage",
+      "value": "TBD",
+      "target": ">= 90% prioritized hosts reporting process, file, auth, module, and kernel inventory telemetry",
+      "status": "needs-data",
+      "owner": "SOC / Detection Engineering"
+    },
+    {
+      "name": "Suspicious escalation investigations",
+      "value": "TBD",
+      "target": "All staging-to-root-transition alerts triaged within incident SLA",
+      "status": "needs-data",
+      "owner": "Incident Response"
+    },
+    {
+      "name": "Risk exceptions past due",
+      "value": "TBD",
+      "target": "0 overdue Dirty Frag exceptions",
+      "status": "needs-data",
+      "owner": "GRC / Risk Owners"
+    }
+  ],
+  "priority_asset_segments": [
+    {
+      "segment": "Internet-facing Linux servers",
+      "business_risk": "Compromised SSH or web-shell access can escalate to root and expose customer-facing services.",
+      "priority": "Critical",
+      "required_action": "Patch and reboot first; verify shell-access controls and detection coverage."
+    },
+    {
+      "segment": "Container and Kubernetes nodes",
+      "business_risk": "A container foothold can become host-level risk if local execution reaches the node kernel.",
+      "priority": "Critical",
+      "required_action": "Validate node kernel posture, privileged container controls, host namespace restrictions, and runtime telemetry."
+    },
+    {
+      "segment": "VPN/IPsec/RxRPC-dependent infrastructure",
+      "business_risk": "Affected modules may be operationally required, extending exposure until patched.",
+      "priority": "High",
+      "required_action": "Coordinate maintenance windows, document exceptions, and increase monitoring."
+    },
+    {
+      "segment": "GLPI/PHP application servers",
+      "business_risk": "Observed post-compromise behaviors included application and session tampering patterns.",
+      "priority": "High",
+      "required_action": "Enable file/session monitoring and validate application integrity after suspected escalation."
+    },
+    {
+      "segment": "CI/CD runners and build agents",
+      "business_risk": "Untrusted build workloads can create local execution opportunities on Linux hosts.",
+      "priority": "High",
+      "required_action": "Restrict runner privileges, isolate workloads, and verify rapid patch cadence."
+    }
+  ],
+  "workstreams": [
+    {
+      "name": "Patch and reboot",
+      "phase": "First 24-72 hours",
+      "status": "not-started",
+      "success_measure": "Prioritized Linux systems are booted into vendor-remediated kernels."
+    },
+    {
+      "name": "Module exposure review",
+      "phase": "First 24-72 hours",
+      "status": "not-started",
+      "success_measure": "Unused esp4, esp6, and rxrpc exposure is blocked or has approved business exceptions."
+    },
+    {
+      "name": "Threat hunting deployment",
+      "phase": "First 24-72 hours",
+      "status": "not-started",
+      "success_measure": "KQL, Sigma, and osquery hunts are deployed or mapped to equivalent telemetry."
+    },
+    {
+      "name": "Linux access hardening",
+      "phase": "First 30 days",
+      "status": "not-started",
+      "success_measure": "Unnecessary SSH, shell, service-account, and automation access paths are reduced."
+    },
+    {
+      "name": "Exception governance",
+      "phase": "First 30 days",
+      "status": "not-started",
+      "success_measure": "All delayed patching or module-disablement exceptions are time-bound and owner-approved."
+    }
+  ],
+  "decision_gates": [
+    {
+      "condition": "Internet-facing or high-value Linux host has vulnerable or unknown kernel posture",
+      "decision": "Patch and reboot immediately; apply enhanced monitoring until validated."
+    },
+    {
+      "condition": "Host requires IPsec, VPN, or RxRPC and cannot disable modules",
+      "decision": "Approve temporary exception only with compensating access controls, monitoring, and committed remediation date."
+    },
+    {
+      "condition": "Suspicious local staging followed by root transition is observed",
+      "decision": "Treat as possible compromise; preserve evidence, isolate as appropriate, and run incident response."
+    },
+    {
+      "condition": "Confirmed exploitation or strong indicators exist",
+      "decision": "Treat as full host compromise and validate application integrity, credentials, persistence, and downstream access."
+    }
+  ],
+  "data_sources": [
+    "Vulnerability management kernel inventory",
+    "EDR process and file telemetry",
+    "Linux auth logs and SSH session records",
+    "Module exposure checks from dirtyfrag_poc.py or osquery",
+    "KQL/Sigma/osquery Dirty Frag hunting content",
+    "GRC exception register"
+  ]
+}

@@ -1,0 +1,32 @@
+flowchart LR
+  n1_external_foothold["Initial low-privileged foothold"]
+  n2_interactive_shell["Interactive shell and host discovery"]
+  n3_module_exposure["Dirty Frag-relevant module exposure"]
+  n4_local_artifact_staging["Local exploit artifact staged"]
+  n5_dirtyfrag_lpe_attempt["Dirty Frag local privilege escalation attempt"]
+  n6_root_context["Root context obtained"]
+  n7_session_and_glpi_tampering["GLPI and PHP session tampering"]
+  n8_credential_and_data_access["Credential and sensitive data access"]
+  n9_patch_and_module_controls["Patch and module controls"]
+  n10_hunting_and_response["Hunting and response analytics"]
+  n1_external_foothold -->|foothold enables shell execution| n2_interactive_shell
+  n2_interactive_shell -->|actor validates vulnerable host conditions| n3_module_exposure
+  n2_interactive_shell -->|actor stages local artifact| n4_local_artifact_staging
+  n3_module_exposure -->|vulnerable/local exposure is a precondition| n5_dirtyfrag_lpe_attempt
+  n4_local_artifact_staging -->|local artifact launches escalation attempt| n5_dirtyfrag_lpe_attempt
+  n5_dirtyfrag_lpe_attempt -->|successful local exploit yields root| n6_root_context
+  n6_root_context -->|root enables application/session tampering| n7_session_and_glpi_tampering
+  n6_root_context -->|root enables sensitive data access| n8_credential_and_data_access
+  n9_patch_and_module_controls -.->|patching and module policy reduce exposure| n3_module_exposure
+  n10_hunting_and_response -.->|staging hunts detect suspicious local artifact execution| n4_local_artifact_staging
+  n10_hunting_and_response -.->|file hunts detect GLPI/PHP session tampering| n7_session_and_glpi_tampering
+  n10_hunting_and_response -.->|PoC and osquery detect module exposure| n3_module_exposure
+
+  classDef access fill:#d8ecff,stroke:#2b6cb0,color:#1a365d
+  classDef risk fill:#ffe8cc,stroke:#c05621,color:#7b341e
+  classDef impact fill:#fed7d7,stroke:#c53030,color:#742a2a
+  classDef control fill:#d9f99d,stroke:#3f6212,color:#365314
+  class n1_external_foothold,n2_interactive_shell,n4_local_artifact_staging access
+  class n3_module_exposure,n5_dirtyfrag_lpe_attempt,n6_root_context risk
+  class n7_session_and_glpi_tampering,n8_credential_and_data_access impact
+  class n9_patch_and_module_controls,n10_hunting_and_response control

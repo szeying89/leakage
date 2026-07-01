@@ -1,0 +1,17 @@
+// Dirty Frag hunt: GLPI authentication or PHP session file tampering.
+// Platform: Microsoft Defender XDR Advanced Hunting.
+// This behavior was reported after suspected Dirty Frag/CopyFail style privilege escalation activity.
+let GlpiOrSessionPaths = dynamic(["/var/www/glpi/", "/usr/share/glpi/", "/etc/glpi/", "/var/lib/php/sessions/", "/var/lib/php/session/", "/tmp/sess_"]);
+DeviceFileEvents
+| where Timestamp > ago(14d)
+| where FolderPath has_any (GlpiOrSessionPaths)
+| where ActionType in~ ("FileCreated", "FileModified", "FileDeleted", "FileRenamed")
+| where FileName endswith ".swp"
+   or FileName startswith "sess_"
+   or FolderPath has "config_auth"
+   or FolderPath has "ldap"
+   or PreviousFolderPath has_any (GlpiOrSessionPaths)
+| extend Hunt="DirtyFrag_GLPI_Or_PHP_Session_Tampering"
+| project Hunt, Timestamp, DeviceName, ActionType, FileName, FolderPath, PreviousFolderPath,
+          InitiatingProcessFileName, InitiatingProcessCommandLine, InitiatingProcessAccountName, SHA256
+| order by Timestamp desc
